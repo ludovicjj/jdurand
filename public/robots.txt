@@ -7,4 +7,4 @@ Disallow: /2fa
 Disallow: /2fa/
 Allow: /
 
-Sitemap: https://hollywoodparis.fr/sitemap.xml
+Sitemap: https://juliedurand.net/sitemap.xml
