@@ -8,7 +8,7 @@ Description: Description
 # Front - navigation
 nav:
     home: Accueil
-    galleries: Galeries
+    galleries: Photos
     videos: Vidéos
     team: Team
     options: Options
@@ -22,11 +22,11 @@ home:
 # Front - gallery
 gallery:
     view: Voir
-    back: Retour aux galeries
+    back: Retour aux photos
     download: Télécharger les photos
     loading: Chargement...
-    empty: "Aucune galerie disponible pour le moment"
-    empty_in_category: 'Aucune galerie dans la catégorie "%category%"'
+    empty: "Aucune galerie photo disponible pour le moment"
+    empty_in_category: 'Aucune galerie photo dans la catégorie "%category%"'
     carousel_prev: Précédent
     carousel_next: Suivant
 

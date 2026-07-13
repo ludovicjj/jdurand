@@ -117,7 +117,7 @@ class GalleryController extends AbstractController
             $thumbnailService->handle($form);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Votre galerie est prête !');
+            $this->addFlash('success', 'Votre galerie photo est prête !');
 
             return $this->redirectToRoute(
                 'app_admin_gallery_update',
@@ -159,7 +159,7 @@ class GalleryController extends AbstractController
             $pictureService->sortPicture();
 
             $entityManager->flush();
-            $this->addFlash('success', 'Galerie modifiée avec succès.');
+            $this->addFlash('success', 'Galerie photo modifiée avec succès.');
 
             return $this->redirectToRoute('app_admin_gallery_index', $filterParams);
         }
@@ -206,7 +206,7 @@ class GalleryController extends AbstractController
             $entityManager->remove($gallery);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Galerie supprimée avec succès.');
+            $this->addFlash('success', 'Galerie photo supprimée avec succès.');
         }
 
         return $this->redirectToRoute('app_admin_gallery_index', $filterParams);

@@ -1,7 +1,7 @@
 # Front - navigation
 nav:
     home: Home
-    galleries: Galleries
+    galleries: Photos
     videos: Videos
     team: Team
     options: Options
@@ -15,11 +15,11 @@ home:
 # Front - gallery
 gallery:
     view: View
-    back: Back to galleries
+    back: Back to photos
     download: Download photos
     loading: Loading...
-    empty: "No galleries available at the moment"
-    empty_in_category: 'No galleries in the "%category%" category'
+    empty: "No photo galleries available at the moment"
+    empty_in_category: 'No photo galleries in the "%category%" category'
     carousel_prev: Previous
     carousel_next: Next
 
