@@ -21,12 +21,10 @@ class PageRepository extends ServiceEntityRepository
         return $this->findOneBy(['slug' => $slug]);
     }
 
-    /**
-     * @return Page[]
-     */
-    public function findAllOrdered(): array
+    public function findRootPagesOrdered(): array
     {
         return $this->createQueryBuilder('p')
+            ->where('p.parent IS NULL')
             ->orderBy('p.position', 'ASC')
             ->getQuery()
             ->getResult();

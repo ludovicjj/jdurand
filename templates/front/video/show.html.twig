@@ -1,8 +1,8 @@
 {% extends 'front/base_front.html.twig' %}
 
-{% block title %}{{ page_meta_title('video_show') }}{% endblock %}
+{% block title %}{{ page_meta_title('clip_show') }}{% endblock %}
 
-{% block meta_description %}{{ page_meta_description('video_show') }}{% endblock %}
+{% block meta_description %}{{ page_meta_description('clip_show') }}{% endblock %}
 
 {% block meta_robots -%}
     {%- if video.visibility -%}
@@ -39,7 +39,7 @@
 
         <div class="aspect-video bg-gray-900 overflow-hidden rounded-lg shadow-sm">
             <iframe src="{{ video.provider.embedUrl(video.externalId) }}"
-                    title="{{ video.title ?: 'Vidéo' }}"
+                    title="{{ video.title ?: 'Extrait' }}"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin"
                     allowfullscreen

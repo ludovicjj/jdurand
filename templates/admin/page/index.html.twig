@@ -6,22 +6,22 @@
 
 {% block content %}
     <div class="mb-6">
-        <p class="text-slate-400">Gérer les meta (title et description) des pages statiques du site.</p>
+        <p class="text-slate-400">Gérer les pages du site.</p>
     </div>
 
-    <div class="mb-6 flex flex-col sm:flex-row gap-3 bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
-        <svg class="w-5 h-5 text-amber-400 self-center sm:self-start sm:mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-        </svg>
-        <div class="text-sm text-amber-200">
-            <p class="font-medium text-amber-100 mb-1">Contenu utilisé pour le SEO</p>
-            <p>
-                Les titres et descriptions saisis ici alimentent les balises HTML <code class="text-amber-300">&lt;title&gt;</code> et <code class="text-amber-300">&lt;meta description&gt;</code>
-                visibles dans Google et lors du partage sur les réseaux sociaux. Toute modification est immédiate et peut impacter le référencement.
-                Rédigez des textes courts, précis et représentatifs du contenu de la page.
-            </p>
-        </div>
-    </div>
+{#    <div class="mb-6 flex flex-col sm:flex-row gap-3 bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">#}
+{#        <svg class="w-5 h-5 text-amber-400 self-center sm:self-start sm:mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">#}
+{#            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>#}
+{#        </svg>#}
+{#        <div class="text-sm text-amber-200">#}
+{#            <p class="font-medium text-amber-100 mb-1">Contenu utilisé pour le SEO</p>#}
+{#            <p>#}
+{#                Les titres et descriptions saisis ici alimentent les balises HTML <code class="text-amber-300">&lt;title&gt;</code> et <code class="text-amber-300">&lt;meta description&gt;</code>#}
+{#                visibles dans Google et lors du partage sur les réseaux sociaux. Toute modification est immédiate et peut impacter le référencement.#}
+{#                Rédigez des textes courts, précis et représentatifs du contenu de la page.#}
+{#            </p>#}
+{#        </div>#}
+{#    </div>#}
 
     {% if pages is empty %}
         <div class="bg-slate-900 rounded-xl p-12 border border-slate-700 text-center">
@@ -33,13 +33,26 @@
     {% else %}
         <div>
             {% for page in pages %}
-                <div class="bg-slate-900 border border-slate-700 rounded-lg p-4 mb-1 {% if page.parent %}ml-8{% endif %} hover:bg-[#16203a] transition">
+                <div class="bg-slate-900 border border-slate-700 rounded-lg p-4 mb-1 hover:bg-[#16203a] transition">
                     <div class="flex items-center gap-4">
                         <div class="min-w-0 flex-1">
                             <div class="text-white font-medium truncate">{{ page.label }}</div>
                             <div class="text-slate-500 text-xs truncate mt-0.5"><code>{{ page.slug }}</code></div>
                         </div>
+                        {# Action #}
                         <div class="flex items-center gap-2 shrink-0">
+                            {% if page.slug != 'home' %}
+                                <form method="post" action="{{ path('app_admin_page_toggle', {id: page.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('toggle_page_' ~ page.id) }}">
+                                    <button type="submit" class="px-3 py-1.5 rounded-md text-xs font-medium border transition cursor-pointer
+                                        {{ page.enabled
+                                    ? 'bg-green-500/10 border-green-500/30 text-green-400 hover:bg-green-500/20'
+                                    : 'bg-slate-800 border-slate-600 text-slate-500 hover:text-slate-300' }}"
+                                            title="{{ page.enabled ? 'Masquer cette page du site' : 'Rendre cette page visible sur le site' }}">
+                                        {{ page.enabled ? 'Visible' : 'Masquée' }}
+                                    </button>
+                                </form>
+                            {% endif %}
                             <a href="{{ path('app_admin_page_update', {id: page.id}) }}"
                                class="p-2 border border-slate-600 rounded-md text-slate-400 hover:text-white hover:border-slate-400 transition" title="Modifier">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

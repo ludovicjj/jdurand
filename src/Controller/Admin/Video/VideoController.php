@@ -45,7 +45,7 @@ class VideoController extends AbstractController
             $entityManager->persist($video);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Vidéo ajoutée avec succès.');
+            $this->addFlash('success', 'Extrait ajouté avec succès.');
 
             return $this->redirectToRoute('app_admin_video_index');
         }
@@ -68,7 +68,7 @@ class VideoController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            $this->addFlash('success', 'Vidéo modifiée avec succès.');
+            $this->addFlash('success', 'Extrait modifié avec succès.');
 
             return $this->redirectToRoute('app_admin_video_index');
         }
@@ -105,7 +105,7 @@ class VideoController extends AbstractController
             $entityManager->remove($video);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Vidéo supprimée avec succès.');
+            $this->addFlash('success', 'Extrait supprimé avec succès.');
         }
 
         return $this->redirectToRoute('app_admin_video_index');

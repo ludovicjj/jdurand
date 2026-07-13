@@ -9,7 +9,7 @@ Description: Description
 nav:
     home: Accueil
     galleries: Photos
-    videos: Vidéos
+    videos: Extraits
     team: Team
     options: Options
     reviews: Avis
@@ -32,8 +32,8 @@ gallery:
 
 # Front - video
 video:
-    back: Retour aux vidéos
-    empty: "Aucune vidéo disponible pour le moment"
+    back: Retour aux extraits
+    empty: "Aucun extrait disponible pour le moment"
 
 # Front - team
 team:

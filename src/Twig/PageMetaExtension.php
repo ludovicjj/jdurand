@@ -14,6 +14,13 @@ class PageMetaExtension extends AbstractExtension
     /** @var array<string, Page> */
     private array $cache = [];
 
+    private const array NAV = [
+        'home'        => ['route' => 'app_front_home',          'label' => 'nav.home'],
+        'photo_index' => ['route' => 'app_front_gallery_index', 'label' => 'nav.galleries'],
+        'clip_index'  => ['route' => 'app_front_video_index',   'label' => 'nav.videos'],
+        'contact'     => ['route' => 'app_front_contact',       'label' => 'nav.contact'],
+    ];
+
     public function __construct(
         private readonly PageRepository $pageRepository,
         private readonly RequestStack $requestStack,
@@ -27,6 +34,7 @@ class PageMetaExtension extends AbstractExtension
             new TwigFunction('page_subtitle', fn (string $slug): string => $this->pageSubtitle($slug)),
             new TwigFunction('page_meta_title', fn (string $slug): string => $this->metaTitle($slug)),
             new TwigFunction('page_meta_description', fn (string $slug): string => $this->metaDescription($slug)),
+            new TwigFunction('nav_items', [$this, 'navItems'])
         ];
     }
 
@@ -76,5 +84,22 @@ class PageMetaExtension extends AbstractExtension
     private function isEnglish(): bool
     {
         return $this->requestStack->getCurrentRequest()?->getLocale() === 'en';
+    }
+
+    public function navItems(): array
+    {
+        $items = [];
+
+        foreach ($this->pageRepository->findRootPagesOrdered() as $page) {
+            $config = self::NAV[$page->getSlug()] ?? null;
+
+            if ($config === null || !$page->isEffectivelyEnabled()) {
+                continue;
+            }
+
+            $items[] = $config;
+        }
+
+        return $items;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Controller\Front;
 
 use App\Repository\CategoryRepository;
 use App\Repository\GalleryRepository;
+use App\Repository\PageRepository;
 use App\Service\Gallery\GalleryService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +18,7 @@ class SitemapController extends AbstractController
         GalleryRepository $galleryRepository,
         CategoryRepository $categoryRepository,
         GalleryService $galleryService,
+        PageRepository $pageRepository,
     ): Response {
         $urls = [];
 
@@ -26,43 +28,52 @@ class SitemapController extends AbstractController
             'priority' => '1.0',
         ];
 
-        $urls[] = [
-            'loc' => $this->generateUrl('app_front_gallery_index', [], UrlGeneratorInterface::ABSOLUTE_URL),
-            'changefreq' => 'weekly',
-            'priority' => '0.9',
-        ];
-
-        $urls[] = [
-            'loc' => $this->generateUrl('app_front_video_index', [], UrlGeneratorInterface::ABSOLUTE_URL),
-            'changefreq' => 'weekly',
-            'priority' => '0.8',
-        ];
-
-        $urls[] = [
-            'loc' => $this->generateUrl('app_front_contact', [], UrlGeneratorInterface::ABSOLUTE_URL),
-            'changefreq' => 'monthly',
-            'priority' => '0.6',
-        ];
-
-        foreach ($categoryRepository->findVisibleOrdered() as $category) {
+        $photoPage = $pageRepository->findOneBySlug('photo_index');
+        if ($photoPage && $photoPage->isEffectivelyEnabled()) {
             $urls[] = [
-                'loc' => $this->generateUrl(
-                    'app_front_gallery_index',
-                    ['category' => $category->getSlug()],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
+                'loc' => $this->generateUrl('app_front_gallery_index', [], UrlGeneratorInterface::ABSOLUTE_URL),
                 'changefreq' => 'weekly',
-                'priority' => '0.7',
+                'priority' => '0.9',
+            ];
+
+            foreach ($categoryRepository->findVisibleOrdered() as $category) {
+                $urls[] = [
+                    'loc' => $this->generateUrl(
+                        'app_front_gallery_index',
+                        ['category' => $category->getSlug()],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    ),
+                    'changefreq' => 'weekly',
+                    'priority' => '0.7',
+                ];
+            }
+
+            $galleries = $galleryRepository->findBy(['visibility' => true]);
+            foreach ($galleries as $gallery) {
+                $urls[] = [
+                    'loc' => $galleryService->generatePublicUrl($gallery),
+                    'lastmod' => $gallery->getUpdatedAt()?->format('Y-m-d'),
+                    'changefreq' => 'monthly',
+                    'priority' => '0.8',
+                ];
+            }
+        }
+
+        $clipPage = $pageRepository->findOneBySlug('clip_index');
+        if ($clipPage && $clipPage->isEffectivelyEnabled()) {
+            $urls[] = [
+                'loc' => $this->generateUrl('app_front_video_index', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                'changefreq' => 'weekly',
+                'priority' => '0.8',
             ];
         }
 
-        $galleries = $galleryRepository->findBy(['visibility' => true]);
-        foreach ($galleries as $gallery) {
+        $contactPage = $pageRepository->findOneBySlug('contact');
+        if ($contactPage && $contactPage->isEffectivelyEnabled()) {
             $urls[] = [
-                'loc' => $galleryService->generatePublicUrl($gallery),
-                'lastmod' => $gallery->getUpdatedAt()?->format('Y-m-d'),
+                'loc' => $this->generateUrl('app_front_contact', [], UrlGeneratorInterface::ABSOLUTE_URL),
                 'changefreq' => 'monthly',
-                'priority' => '0.8',
+                'priority' => '0.6',
             ];
         }
 

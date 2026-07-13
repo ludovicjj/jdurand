@@ -2,7 +2,7 @@
 nav:
     home: Home
     galleries: Photos
-    videos: Videos
+    videos: Clips
     team: Team
     options: Options
     reviews: Reviews
@@ -25,8 +25,8 @@ gallery:
 
 # Front - video
 video:
-    back: Back to videos
-    empty: "No videos available at the moment"
+    back: Back to clips
+    empty: "No clips available at the moment"
 
 # Front - team
 team:

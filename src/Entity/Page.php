@@ -7,6 +7,8 @@ use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -74,6 +76,19 @@ class Page
 
     #[ORM\Column]
     private ?DateTimeImmutable $updatedAt = null;
+
+    #[ORM\Column(options: ['default' => true])]
+    private bool $enabled = true;
+
+    /** @var Collection<int, Page> */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $children;
+
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function onPrePersist(): void
@@ -245,5 +260,30 @@ class Page
     public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): static
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    // Helper
+    public function isEffectivelyEnabled(): bool
+    {
+        return $this->enabled
+            && ($this->parent === null || $this->parent->isEffectivelyEnabled());
+    }
+
+    /** @return Collection<int, Page> */
+    public function getChildren(): Collection
+    {
+        return $this->children;
     }
 }
