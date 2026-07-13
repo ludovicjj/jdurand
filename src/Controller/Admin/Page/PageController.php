@@ -18,7 +18,7 @@ class PageController extends AbstractController
     public function index(PageRepository $pageRepository): Response
     {
         return $this->render('admin/page/index.html.twig', [
-            'pages' => $pageRepository->findAllOrdered(),
+            'pages' => $pageRepository->findRootPagesOrdered(),
         ]);
     }
 
@@ -36,12 +36,42 @@ class PageController extends AbstractController
 
             $this->addFlash('success', 'Page modifiée avec succès.');
 
-            return $this->redirectToRoute('app_admin_page_index');
+            return $page->getParent() !== null
+                ? $this->redirectToRoute('app_admin_page_update', ['id' => $page->getParent()->getId()])
+                : $this->redirectToRoute('app_admin_page_index');
         }
 
         return $this->render('admin/page/update.html.twig', [
             'page' => $page,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/{id}/toggle', name: 'toggle', methods: ['POST'])]
+    public function toggle(
+        Request $request,
+        Page $page,
+        EntityManagerInterface $entityManager,
+    ): Response {
+        if (!$this->isCsrfTokenValid('toggle_page_' . $page->getId(), (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton CSRF invalide. Rechargez la page et réessayez.');
+
+            return $this->redirectToRoute('app_admin_page_index');
+        }
+
+        if ($page->getParent() !== null || $page->getSlug() === 'home') {
+            throw $this->createNotFoundException();
+        }
+
+        $page->setEnabled(!$page->isEnabled());
+        $entityManager->flush();
+
+        $this->addFlash('success', sprintf(
+            'La page « %s » est maintenant %s.',
+            $page->getLabel(),
+            $page->isEnabled() ? 'visible' : 'masquée'
+        ));
+
+        return $this->redirectToRoute('app_admin_page_index');
     }
 }

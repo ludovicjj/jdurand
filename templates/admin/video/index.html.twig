@@ -1,8 +1,8 @@
 {% extends 'admin/admin_layout.html.twig' %}
 
-{% block title %}Vidéos - {{ parent() }}{% endblock %}
+{% block title %}Extraits - {{ parent() }}{% endblock %}
 
-{% block page_title %}Vidéos{% endblock %}
+{% block page_title %}Extraits{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -11,13 +11,13 @@
 
 {% block content %}
     <div class="mb-6 flex justify-between items-center">
-        <p class="text-slate-400">{{ videoCount }} vidéo(s)</p>
+        <p class="text-slate-400">{{ videoCount }} extrait(s)</p>
         <a href="{{ path('app_admin_video_create') }}"
            class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
-            Nouvelle vidéo
+            Nouvel extrait
         </a>
     </div>
 
@@ -26,10 +26,10 @@
             <svg class="w-16 h-16 mx-auto text-slate-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
             </svg>
-            <p class="text-slate-400 mb-4">Aucune vidéo pour le moment</p>
+            <p class="text-slate-400 mb-4">Aucun extrait pour le moment</p>
             <a href="{{ path('app_admin_video_create') }}"
                class="inline-flex items-center text-purple-400 hover:text-purple-300 transition">
-                Ajouter votre première vidéo
+                Ajouter votre premier extrait
                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
@@ -84,7 +84,7 @@
                                 </svg>
                             </a>
                             <form method="post" action="{{ path('app_admin_video_delete', {id: video.id}) }}" class="inline"
-                                  onsubmit="return confirm('Supprimer cette vidéo ?')">
+                                  onsubmit="return confirm('Supprimer cet extrait ?')">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ video.id) }}">
                                 <button type="submit" class="p-2 border border-red-900/50 rounded-md text-red-400 hover:text-red-300 hover:border-red-700 transition" title="Supprimer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +138,7 @@
                                     </svg>
                                 </a>
                                 <form method="post" action="{{ path('app_admin_video_delete', {id: video.id}) }}" class="inline"
-                                      onsubmit="return confirm('Supprimer cette vidéo ?')">
+                                      onsubmit="return confirm('Supprimer cet extrait ?')">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ video.id) }}">
                                     <button type="submit" class="p-2 border border-red-900/50 rounded-md text-red-400 hover:text-red-300 hover:border-red-700 transition" title="Supprimer">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

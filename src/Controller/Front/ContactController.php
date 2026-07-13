@@ -3,6 +3,7 @@
 namespace App\Controller\Front;
 
 use App\Form\ContactType;
+use App\Service\Page\PageVisibilityChecker;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -20,9 +21,13 @@ class ContactController extends AbstractController
         Request $request,
         MailerInterface $mailer,
         LoggerInterface $logger,
+        PageVisibilityChecker $pageVisibilityChecker,
         #[Autowire('%env(CONTACT_FROM)%')] string $contactFrom,
         #[Autowire('%env(CONTACT_TO)%')] string $contactTo,
     ): Response {
+        // Check page is enable
+        $pageVisibilityChecker->denyUnlessEnabled('contact');
+
         $form = $this->createForm(ContactType::class);
         $form->handleRequest($request);
 

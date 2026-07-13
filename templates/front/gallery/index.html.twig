@@ -1,8 +1,8 @@
 {% extends 'front/base_front.html.twig' %}
 
-{% block title %}{{ page_meta_title('gallery_index') }}{% endblock %}
+{% block title %}{{ page_meta_title('photo_index') }}{% endblock %}
 
-{% block meta_description %}{{ page_meta_description('gallery_index') }}{% endblock %}
+{% block meta_description %}{{ page_meta_description('photo_index') }}{% endblock %}
 
 {% block canonical %}{{ app.request.schemeAndHttpHost ~ path('app_front_gallery_index', activeCategory ? {category: activeCategory.slug} : {}) }}{% endblock %}
 
@@ -20,10 +20,10 @@
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div class="text-center mb-8">
                 <h1 class="font-['Bodoni_Moda',serif] font-normal uppercase tracking-wider text-5xl md:text-7xl text-gray-900 mb-4">
-                    {{ page_title('gallery_index') }}
+                    {{ page_title('photo_index') }}
                 </h1>
                 <p class="text-sm md:text-lg text-gray-600 max-w-[200px] md:max-w-2xl mx-auto">
-                    {{ page_subtitle('gallery_index')|nl2br }}
+                    {{ page_subtitle('photo_index')|nl2br }}
                 </p>
             </div>
 

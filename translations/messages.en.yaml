@@ -1,11 +1,10 @@
 # Front - navigation
 nav:
     home: Home
-    galleries: Galleries
-    videos: Videos
+    galleries: Photos
+    videos: Clips
     team: Team
     options: Options
-    reviews: Reviews
     contact: Contact
 
 # Front - home
@@ -15,18 +14,18 @@ home:
 # Front - gallery
 gallery:
     view: View
-    back: Back to galleries
+    back: Back to photos
     download: Download photos
     loading: Loading...
-    empty: "No galleries available at the moment"
-    empty_in_category: 'No galleries in the "%category%" category'
+    empty: "No photo galleries available at the moment"
+    empty_in_category: 'No photo galleries in the "%category%" category'
     carousel_prev: Previous
     carousel_next: Next
 
 # Front - video
 video:
-    back: Back to videos
-    empty: "No videos available at the moment"
+    back: Back to clips
+    empty: "No clips available at the moment"
 
 # Front - team
 team:
@@ -37,20 +36,6 @@ team:
 options:
     back: Back to options
     empty: "No options available at the moment"
-
-# Front - reviews
-reviews:
-    empty: "No reviews yet"
-    send: Send
-    flash_success: "Thank you for your review. It will be displayed after approval."
-    flash_rate_limited: "You have already submitted 3 reviews today. Please come back tomorrow."
-    form:
-        heading: "Leave your review"
-        pseudo_label: "Name *"
-        pseudo_placeholder: "Your name"
-        rating_label: "Rating *"
-        message_label: "Message *"
-        message_placeholder: "Your review..."
 
 # Front - contact
 contact:

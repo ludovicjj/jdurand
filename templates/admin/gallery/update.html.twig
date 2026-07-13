@@ -2,7 +2,7 @@
 
 {% block title %}Modifier {{ gallery.title }} - {{ parent() }}{% endblock %}
 
-{% block page_title %}Modifier la galerie{% endblock %}
+{% block page_title %}Modifier la galerie photo{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -48,7 +48,7 @@
             <div class="mt-4 flex justify-center sm:justify-start">
                 <img id="gallery-qrcode"
                      src="{{ front_gallery_qr_code }}"
-                     alt="QR code de l'URL de la galerie"
+                     alt="QR code de l'URL de la galerie photo"
                      class="w-48 h-48 rounded-lg bg-white p-2">
             </div>
         </div>
@@ -152,7 +152,7 @@
             {# Form action #}
             <div class="flex items-center justify-between pt-6">
                 <a href="{{ path('app_admin_gallery_index', filterParams) }}" class="text-purple-400 hover:text-purple-300 transition">
-                    &larr; Retour aux galeries
+                    &larr; Retour aux photos
                 </a>
                 <button type="submit"
                         id="submit-btn"
@@ -233,11 +233,11 @@
         <div class="bg-slate-900 rounded-xl p-6 border border-red-900/50">
             <h2 class="text-lg font-semibold text-red-400 mb-4">Zone de danger</h2>
             <form action="{{ path('app_admin_gallery_delete', {id: gallery.id}|merge(filterParams)) }}" method="post"
-                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette galerie ?')">
+                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette galerie photo ?')">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ gallery.id) }}">
                 <button type="submit"
                         class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-4 py-2 rounded-lg transition border border-red-600">
-                    Supprimer la galerie
+                    Supprimer la galerie photo
                 </button>
             </form>
         </div>

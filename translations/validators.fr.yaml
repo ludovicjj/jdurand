@@ -9,15 +9,3 @@ contact:
         required: "Veuillez renseigner un message."
         too_short: "Le message doit faire au moins {{ limit }} caractères."
         too_long: "Le message ne peut pas dépasser {{ limit }} caractères."
-
-reviews:
-    pseudo:
-        required: "Veuillez renseigner un pseudo."
-        too_short: "Le pseudo doit faire au moins {{ limit }} caractères."
-        too_long: "Le pseudo ne peut pas dépasser {{ limit }} caractères."
-    message:
-        required: "Veuillez renseigner un message."
-        too_short: "Le message doit faire au moins {{ limit }} caractères."
-        too_long: "Le message ne peut pas dépasser {{ limit }} caractères."
-    rating:
-        required: "Veuillez sélectionner une note."

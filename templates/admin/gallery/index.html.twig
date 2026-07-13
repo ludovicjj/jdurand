@@ -1,8 +1,8 @@
 {% extends 'admin/admin_layout.html.twig' %}
 
-{% block title %}Galeries - {{ parent() }}{% endblock %}
+{% block title %}Photos - {{ parent() }}{% endblock %}
 
-{% block page_title %}Galeries{% endblock %}
+{% block page_title %}Photos{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -11,13 +11,13 @@
 
 {% block content %}
     <div class="mb-6 flex justify-between items-center">
-        <p class="text-slate-400">{{ galleryCount }} galerie(s)</p>
+        <p class="text-slate-400">{{ galleryCount }} galerie(s) photo</p>
         <a href="{{ path('app_admin_gallery_create', filterParams) }}"
            class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
-            Nouvelle galerie
+            Nouvelle galerie photo
         </a>
     </div>
 
@@ -50,14 +50,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
             </svg>
             {% if activeCategory %}
-                <p class="text-slate-400 mb-4">Aucune galerie dans la catégorie « {{ activeCategory.name }} »</p>
+                <p class="text-slate-400 mb-4">Aucune galerie photo dans la catégorie « {{ activeCategory.name }} »</p>
             {% elseif uncategorizedOnly %}
-                <p class="text-slate-400 mb-4">Aucune galerie sans catégorie</p>
+                <p class="text-slate-400 mb-4">Aucune galerie photo sans catégorie</p>
             {% else %}
-                <p class="text-slate-400 mb-4">Aucune galerie pour le moment</p>
+                <p class="text-slate-400 mb-4">Aucune galerie photo pour le moment</p>
                 <a href="{{ path('app_admin_gallery_create') }}"
                    class="inline-flex items-center text-purple-400 hover:text-purple-300 transition">
-                    Créer votre première galerie
+                    Créer votre première galerie photo
                     <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>

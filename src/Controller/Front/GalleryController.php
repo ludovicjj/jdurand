@@ -7,6 +7,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\GalleryRepository;
 use App\Repository\PictureRepository;
 use App\Service\Gallery\GalleryService;
+use App\Service\Page\PageVisibilityChecker;
 use App\Service\S3Service;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/gallery', name: 'app_front_gallery_')]
+#[Route('/photo', name: 'app_front_gallery_')]
 class GalleryController extends AbstractController
 {
     private const int PICTURES_PER_PAGE = 15;
@@ -25,7 +26,11 @@ class GalleryController extends AbstractController
         Request $request,
         GalleryRepository $galleryRepository,
         CategoryRepository $categoryRepository,
+        PageVisibilityChecker $pageVisibilityChecker,
     ): Response {
+        // Check page is enable
+        $pageVisibilityChecker->denyUnlessEnabled('photo_index');
+
         $categories = $categoryRepository->findVisibleOrdered();
         $slug = $request->query->get('category');
         $activeCategory = $slug ? $categoryRepository->findOneBy(['slug' => $slug, 'visibility' => true]) : null;
@@ -53,7 +58,11 @@ class GalleryController extends AbstractController
         CategoryRepository $categoryRepository,
         S3Service $s3Service,
         GalleryService $galleryService,
+        PageVisibilityChecker $pageVisibilityChecker,
     ): JsonResponse {
+        // Check page is enable
+        $pageVisibilityChecker->denyUnlessEnabled('photo_index');
+
         $offset = max(0, $request->query->getInt('offset'));
         $slug = $request->query->get('category');
 
@@ -89,7 +98,12 @@ class GalleryController extends AbstractController
         Request $request,
         PictureRepository $pictureRepository,
         GalleryService $galleryService,
+        PageVisibilityChecker $pageVisibilityChecker,
     ): Response {
+        // Check page is enable
+        $pageVisibilityChecker->denyUnlessEnabled('photo_show');
+
+        // Check can access to private gallery
         if (!$galleryService->canAccessGallery($gallery, $request->query->get('token'))) {
             return $this->redirectToRoute('app_front_home');
         }
@@ -122,30 +136,17 @@ class GalleryController extends AbstractController
         ]);
     }
 
-    #[Route('/{id<\d+>}', name: 'show_legacy', methods: ['GET'])]
-    public function showLegacy(
-        Gallery $gallery,
-        Request $request,
-        GalleryService $galleryService,
-    ): Response {
-        if (!$galleryService->canAccessGallery($gallery, $request->query->get('token'))) {
-            return $this->redirectToRoute('app_front_home');
-        }
-
-        return $this->redirectToRoute(
-            'app_front_gallery_show',
-            ['id' => $gallery->getId(), 'slug' => $galleryService->resolveSlug($gallery)] + $request->query->all(),
-            Response::HTTP_MOVED_PERMANENTLY,
-        );
-    }
-
     #[Route('/api/{id<\d+>}/pictures', name: 'pictures', methods: ['GET'])]
     public function pictures(
         Gallery $gallery,
         Request $request,
         PictureRepository $pictureRepository,
         S3Service $s3Service,
+        PageVisibilityChecker $pageVisibilityChecker,
     ): JsonResponse {
+        // Check page is enable
+        $pageVisibilityChecker->denyUnlessEnabled('photo_show');
+
         $offset = $request->query->getInt('offset', 0);
         $pictures = $pictureRepository->findByGalleryPaginated($gallery, $offset, self::PICTURES_PER_PAGE);
         $totalPictures = $pictureRepository->countByGallery($gallery);

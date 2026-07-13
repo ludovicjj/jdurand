@@ -1,8 +1,8 @@
 {% extends 'admin/admin_layout.html.twig' %}
 
-{% block title %}Nouvelle vidéo - {{ parent() }}{% endblock %}
+{% block title %}Nouvel extrait - {{ parent() }}{% endblock %}
 
-{% block page_title %}Nouvelle vidéo{% endblock %}
+{% block page_title %}Nouvel extrait{% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset('build/ckeditor/ckeditor.js') }}"></script>
@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <span class="text-sm font-medium text-slate-300">{{ form_label(form.visibility, 'Vidéo publique', {'label_attr': {'class': 'text-sm font-medium text-slate-300'}}) }}</span>
+                    <span class="text-sm font-medium text-slate-300">{{ form_label(form.visibility, 'Extrait public', {'label_attr': {'class': 'text-sm font-medium text-slate-300'}}) }}</span>
                     <label class="relative inline-flex items-center cursor-pointer">
                         {{ form_widget(form.visibility, {'attr': {'class': 'sr-only peer'}}) }}
                         <div class="w-11 h-6 bg-slate-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
@@ -48,13 +48,13 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-end pt-6">
+            <div class="flex items-center justify-between pt-6">
                 <a href="{{ path('app_admin_video_index') }}" class="text-purple-400 hover:text-purple-300 transition">
-                    &larr; Retour aux vidéos
+                    &larr; Retour aux extraits
                 </a>
                 <button type="submit"
                         class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition">
-                    Ajouter la vidéo
+                    Ajouter l'extrait
                 </button>
             </div>
         </div>

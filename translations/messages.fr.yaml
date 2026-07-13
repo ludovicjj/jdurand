@@ -8,11 +8,10 @@ Description: Description
 # Front - navigation
 nav:
     home: Accueil
-    galleries: Galeries
-    videos: Vidéos
+    galleries: Photos
+    videos: Extraits
     team: Team
     options: Options
-    reviews: Avis
     contact: Contact
 
 # Front - home
@@ -22,18 +21,18 @@ home:
 # Front - gallery
 gallery:
     view: Voir
-    back: Retour aux galeries
+    back: Retour aux photos
     download: Télécharger les photos
     loading: Chargement...
-    empty: "Aucune galerie disponible pour le moment"
-    empty_in_category: 'Aucune galerie dans la catégorie "%category%"'
+    empty: "Aucune galerie photo disponible pour le moment"
+    empty_in_category: 'Aucune galerie photo dans la catégorie "%category%"'
     carousel_prev: Précédent
     carousel_next: Suivant
 
 # Front - video
 video:
-    back: Retour aux vidéos
-    empty: "Aucune vidéo disponible pour le moment"
+    back: Retour aux extraits
+    empty: "Aucun extrait disponible pour le moment"
 
 # Front - team
 team:
@@ -44,20 +43,6 @@ team:
 options:
     back: Retour aux options
     empty: "Aucune option disponible pour le moment"
-
-# Front - reviews
-reviews:
-    empty: "Aucun avis pour le moment"
-    send: Envoyer
-    flash_success: "Merci pour votre avis. Il sera affiché après validation."
-    flash_rate_limited: "Vous avez déjà envoyé 3 avis aujourd'hui. Merci de revenir demain."
-    form:
-        heading: "Laissez votre avis"
-        pseudo_label: "Pseudo *"
-        pseudo_placeholder: "Votre pseudo"
-        rating_label: "Note *"
-        message_label: "Message *"
-        message_placeholder: "Votre avis..."
 
 # Front - contact
 contact:

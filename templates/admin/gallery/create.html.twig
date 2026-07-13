@@ -1,8 +1,8 @@
 {% extends 'admin/admin_layout.html.twig' %}
 
-{% block title %}Nouvelle galerie - {{ parent() }}{% endblock %}
+{% block title %}Nouvelle galerie photo - {{ parent() }}{% endblock %}
 
-{% block page_title %}Nouvelle galerie{% endblock %}
+{% block page_title %}Nouvelle galerie photo{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -99,11 +99,11 @@
             {# Form action #}
             <div class="flex items-center justify-between pt-6">
                 <a href="{{ path('app_admin_gallery_index', filterParams) }}" class="text-purple-400 hover:text-purple-300 transition">
-                    &larr; Retour aux galeries
+                    &larr; Retour aux photos
                 </a>
                 <button type="submit"
                         class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition">
-                    Créer la galerie
+                    Créer la galerie photo
                 </button>
             </div>
         </div>
@@ -119,7 +119,7 @@
                 <div>
                     <h3 class="text-lg font-medium text-white mb-2">Et les photos ?</h3>
                     <p class="text-slate-300">
-                        Vous pourrez ajouter vos photos juste après avoir cliqué sur <strong class="text-purple-400">"Créer la galerie"</strong>.
+                        Vous pourrez ajouter vos photos juste après avoir cliqué sur <strong class="text-purple-400">"Créer la galerie photo"</strong>.
                     </p>
                     <p class="text-slate-400 text-sm mt-2">
                         Commencez par remplir le titre et choisir une image de couverture ci-dessus.
