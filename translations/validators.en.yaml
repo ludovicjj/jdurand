@@ -9,15 +9,3 @@ contact:
         required: "Please enter a message."
         too_short: "The message must be at least {{ limit }} characters long."
         too_long: "The message cannot exceed {{ limit }} characters."
-
-reviews:
-    pseudo:
-        required: "Please enter your name."
-        too_short: "Your name must be at least {{ limit }} characters long."
-        too_long: "Your name cannot exceed {{ limit }} characters."
-    message:
-        required: "Please enter a message."
-        too_short: "The message must be at least {{ limit }} characters long."
-        too_long: "The message cannot exceed {{ limit }} characters."
-    rating:
-        required: "Please select a rating."
