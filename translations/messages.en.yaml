@@ -5,7 +5,6 @@ nav:
     videos: Clips
     team: Team
     options: Options
-    reviews: Reviews
     contact: Contact
 
 # Front - home
@@ -37,20 +36,6 @@ team:
 options:
     back: Back to options
     empty: "No options available at the moment"
-
-# Front - reviews
-reviews:
-    empty: "No reviews yet"
-    send: Send
-    flash_success: "Thank you for your review. It will be displayed after approval."
-    flash_rate_limited: "You have already submitted 3 reviews today. Please come back tomorrow."
-    form:
-        heading: "Leave your review"
-        pseudo_label: "Name *"
-        pseudo_placeholder: "Your name"
-        rating_label: "Rating *"
-        message_label: "Message *"
-        message_placeholder: "Your review..."
 
 # Front - contact
 contact:
