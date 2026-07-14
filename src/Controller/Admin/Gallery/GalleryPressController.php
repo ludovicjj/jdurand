@@ -5,8 +5,6 @@ namespace App\Controller\Admin\Gallery;
 use App\Entity\Gallery;
 use App\Entity\Picture;
 use App\Form\GalleryType;
-use App\Repository\CategoryRepository;
-use App\Repository\GalleryCategoryRepository;
 use App\Repository\GalleryRepository;
 use App\Repository\PictureRepository;
 use App\Service\Gallery\GalleryService;
@@ -23,60 +21,41 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
-#[Route('/admin/gallery', name: 'app_admin_gallery_')]
-class GalleryController extends AbstractController
+#[Route('/admin/press', name: 'app_admin_press_')]
+class GalleryPressController extends AbstractController
 {
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(
-        Request $request,
-        GalleryRepository $galleryRepository,
-        CategoryRepository $categoryRepository,
-        GalleryService $galleryService,
-    ): Response {
-        $slug = $request->query->get('category');
-        $uncategorizedOnly = $request->query->getBoolean('uncategorized');
-        $activeCategory = $slug && !$uncategorizedOnly
-            ? $categoryRepository->findOneBy(['slug' => $slug])
-            : null;
+    public function index(GalleryRepository $galleryRepository): Response
+    {
+        $type = Gallery::TYPE_PRESS;
+        $galleries = $galleryRepository->findAllWithThumbnails(null, false, $type);
+        $galleryCount = $galleryRepository->countAll(null, false, $type);
 
-        $galleries = $galleryRepository->findAllWithThumbnails($activeCategory, $uncategorizedOnly);
-        $galleryCount = $galleryRepository->countAll($activeCategory, $uncategorizedOnly);
-
-        return $this->render('admin/gallery/index.html.twig', [
+        return $this->render('admin/gallery/press/index.html.twig', [
             'galleries' => $galleries,
             'galleryCount' => $galleryCount,
-            'categories' => $categoryRepository->findAllOrdered(),
-            'activeCategory' => $activeCategory,
-            'uncategorizedOnly' => $uncategorizedOnly,
-            'filterParams' => $galleryService->extractAdminFilterParams($request),
+            'filterParams' => [],
         ]);
     }
 
     #[Route('/reorder', name: 'reorder', methods: ['POST'])]
     public function reorder(
         Request $request,
-        CategoryRepository $categoryRepository,
-        GalleryCategoryRepository $galleryCategoryRepository,
+        GalleryRepository $galleryRepository,
         EntityManagerInterface $entityManager,
     ): JsonResponse {
         try {
             $payload = $request->toArray();
-            $categoryId = $payload['categoryId'] ?? null;
             $ids = $payload['ids'] ?? [];
 
-            if (!is_int($categoryId) || !is_array($ids)) {
+            if (!is_array($ids)) {
                 throw new InvalidArgumentException('Invalid input data.');
             }
 
-            $category = $categoryRepository->find($categoryId);
-            if ($category === null) {
-                throw new InvalidArgumentException('Category not found.');
-            }
-
-            $galleryCategories = $galleryCategoryRepository->findByCategoryAndGalleryIds($category, $ids);
+            $galleries = $galleryRepository->findBy(['id' => $ids, 'type' => Gallery::TYPE_PRESS]);
             $indexed = [];
-            foreach ($galleryCategories as $gc) {
-                $indexed[$gc->getGallery()->getId()] = $gc;
+            foreach ($galleries as $gallery) {
+                $indexed[$gallery->getId()] = $gallery;
             }
 
             foreach ($ids as $position => $id) {
@@ -102,10 +81,16 @@ class GalleryController extends AbstractController
         EntityManagerInterface $entityManager,
         ThumbnailService $thumbnailService,
         GalleryService $galleryService,
+        GalleryRepository $galleryRepository,
     ): Response {
-        $gallery = new Gallery();
-        $form = $this->createForm(GalleryType::class, $gallery);
+        $gallery = new Gallery()
+            ->setType(Gallery::TYPE_PRESS)
+            ->setPosition($galleryRepository->countAll(type: Gallery::TYPE_PRESS));
+
+        $form = $this->createForm(GalleryType::class, $gallery, ['with_categories' => false]);
         $form->handleRequest($request);
+
+        // Extract filter param for redirect
         $filterParams = $galleryService->extractAdminFilterParams($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -117,20 +102,21 @@ class GalleryController extends AbstractController
             $thumbnailService->handle($form);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Votre galerie photo est prête !');
+            $this->addFlash('success', 'Votre galerie press est prête !');
 
             return $this->redirectToRoute(
-                'app_admin_gallery_update',
+                'app_admin_press_update',
                 ['id' => $gallery->getId()] + $filterParams
             );
         }
 
-        return $this->render('admin/gallery/create.html.twig', [
+        return $this->render('admin/gallery/press/create.html.twig', [
             'gallery' => $gallery,
             'form' => $form,
             'filterParams' => $filterParams,
         ]);
     }
+
 
     #[Route('/{id}/update', name: 'update', methods: ['GET', 'POST'])]
     public function update(
@@ -145,10 +131,14 @@ class GalleryController extends AbstractController
     ): Response {
         $pictures = $pictureRepository->findByGalleryAndOrderPosition($gallery);
         $pictureIds = $pictureRepository->findIdsByGallery($gallery);
+
+        // Build absolute URL
         $frontGalleryUrl = $galleryService->generatePublicUrl($gallery);
+
+        // Extract filter param for redirect
         $filterParams = $galleryService->extractAdminFilterParams($request);
 
-        $form = $this->createForm(GalleryType::class, $gallery);
+        $form = $this->createForm(GalleryType::class, $gallery, ['with_categories' => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -159,12 +149,12 @@ class GalleryController extends AbstractController
             $pictureService->sortPicture();
 
             $entityManager->flush();
-            $this->addFlash('success', 'Galerie photo modifiée avec succès.');
+            $this->addFlash('success', 'Galerie press modifiée avec succès.');
 
-            return $this->redirectToRoute('app_admin_gallery_index', $filterParams);
+            return $this->redirectToRoute('app_admin_press_index', $filterParams);
         }
 
-        return $this->render('admin/gallery/update.html.twig', [
+        return $this->render('admin/gallery/press/update.html.twig', [
             'gallery' => $gallery,
             'form' => $form,
             'pictures' => $pictures,
@@ -186,8 +176,7 @@ class GalleryController extends AbstractController
         $filterParams = $galleryService->extractAdminFilterParams($request);
 
         if ($this->isCsrfTokenValid('delete' . $gallery->getId(), $request->request->get('_token'))) {
-            // Temp objects for pictures still processing live at temp/{id}.jpg,
-            // outside the gallery prefix => collect them for batch removal.
+            // Clear All Temp files (S3 : temp/{id}.jpg)
             $tempKeys = [];
             foreach ($gallery->getPictures() as $picture) {
                 if (in_array($picture->getStatus(), [Picture::STATUS_PROCESSING, Picture::STATUS_FAILED], true)) {
@@ -198,7 +187,7 @@ class GalleryController extends AbstractController
                 $s3Service->deleteFiles($tempKeys);
             }
 
-            // Batch-delete everything under galleries/{id}/ (cover + pictures)
+            // Batch-delete everything, cover + pictures  (S3 : galleries/{id}/)
             $key = sprintf('galleries/%d/', $gallery->getId());
             $s3Service->deleteFilesByPrefix($key);
 
@@ -206,58 +195,9 @@ class GalleryController extends AbstractController
             $entityManager->remove($gallery);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Galerie photo supprimée avec succès.');
+            $this->addFlash('success', 'Galerie press supprimée avec succès.');
         }
 
-        return $this->redirectToRoute('app_admin_gallery_index', $filterParams);
+        return $this->redirectToRoute('app_admin_press_index', $filterParams);
     }
-
-    #[Route('/{id}/token', name: 'token', methods: ['POST'])]
-    public function resetToken(
-        Gallery $gallery,
-        EntityManagerInterface $entityManager,
-        GalleryService $galleryService,
-        QrCodeService $qrCodeService,
-    ): Response
-    {
-        $gallery->resetToken();
-        $entityManager->flush();
-
-        $url = $galleryService->generatePublicUrl($gallery);
-
-        return $this->json([
-            'success' => true,
-            'url' => $url,
-            'qrCode' => $qrCodeService->generateDataUri($url),
-        ]);
-    }
-
-    #[Route('/{id}/pictures/prepare', name: 'prepare_picture', methods: ['POST'])]
-    public function preparePicture(
-        Request $request,
-        Gallery $gallery,
-        PictureService $pictureService,
-    ): JsonResponse {
-        try {
-            $payload = $request->toArray();
-            $filename = (string) ($payload['filename'] ?? '');
-            $contentType = (string) ($payload['contentType'] ?? '');
-
-            $result = $pictureService->prepareUpload($filename, $contentType, $gallery);
-        } catch (Throwable $e) {
-            return $this->json(['success' => false, 'error' => $e->getMessage()], 400);
-        }
-
-        /** @var Picture $picture */
-        $picture = $result['picture'];
-
-        return $this->json([
-            'success' => true,
-            'pictureId' => $picture->getId(),
-            'uploadUrl' => $result['uploadUrl'],
-            'originalName' => $picture->getOriginalName(),
-            'status' => Picture::STATUS_PROCESSING,
-        ]);
-    }
-
 }

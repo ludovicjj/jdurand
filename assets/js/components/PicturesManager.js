@@ -316,12 +316,10 @@ export class PicturesManager {
             animation: 150,
             ghostClass: 'opacity-50',
             onEnd: () => {
-                console.log('Before sort', this.pictureIds)
                 // Rebuild pictureIds array based on DOM order
                 this.pictureIds = Array.from(this.grid.querySelectorAll('div[data-picture-id]'))
                     .map(el => parseInt(el.dataset.pictureId));
 
-                console.log('After sort', this.pictureIds)
                 this.updateHiddenInput();
             }
         });

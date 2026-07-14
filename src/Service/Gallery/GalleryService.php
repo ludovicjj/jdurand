@@ -29,8 +29,12 @@ readonly class GalleryService
             $params['token'] = $gallery->getToken();
         }
 
+        $route = $gallery->getType() === Gallery::TYPE_PRESS
+            ? 'app_front_press_show'
+            : 'app_front_gallery_show';
+
         return $this->urlGenerator->generate(
-            'app_front_gallery_show',
+            $route,
             $params,
             UrlGeneratorInterface::ABSOLUTE_URL
         );

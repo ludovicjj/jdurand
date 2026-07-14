@@ -2,6 +2,7 @@
 
 namespace App\Controller\Front;
 
+use App\Entity\Gallery;
 use App\Repository\CategoryRepository;
 use App\Repository\GalleryRepository;
 use App\Repository\PageRepository;
@@ -48,13 +49,32 @@ class SitemapController extends AbstractController
                 ];
             }
 
-            $galleries = $galleryRepository->findBy(['visibility' => true]);
+            $galleries = $galleryRepository->findBy(['visibility' => true, 'type' => Gallery::TYPE_PHOTO]);
             foreach ($galleries as $gallery) {
                 $urls[] = [
                     'loc' => $galleryService->generatePublicUrl($gallery),
                     'lastmod' => $gallery->getUpdatedAt()?->format('Y-m-d'),
                     'changefreq' => 'monthly',
                     'priority' => '0.8',
+                ];
+            }
+        }
+
+        $pressPage = $pageRepository->findOneBySlug('press_index');
+        if ($pressPage && $pressPage->isEffectivelyEnabled()) {
+            $urls[] = [
+                'loc' => $this->generateUrl('app_front_press_index', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                'changefreq' => 'weekly',
+                'priority' => '0.8',
+            ];
+
+            $presses = $galleryRepository->findBy(['visibility' => true, 'type' => Gallery::TYPE_PRESS]);
+            foreach ($presses as $press) {
+                $urls[] = [
+                    'loc' => $galleryService->generatePublicUrl($press),
+                    'lastmod' => $press->getUpdatedAt()?->format('Y-m-d'),
+                    'changefreq' => 'monthly',
+                    'priority' => '0.7',
                 ];
             }
         }

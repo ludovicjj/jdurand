@@ -1,0 +1,55 @@
+{% extends 'admin/admin_layout.html.twig' %}
+
+{% block title %}Modifier {{ gallery.title }} - {{ parent() }}{% endblock %}
+
+{% block page_title %}Modifier la galerie photo{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('admin_gallery') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('admin_gallery') }}
+{% endblock %}
+
+{% block content %}
+    <div class="w-full">
+        {% include 'admin/gallery/_partials/_public_link.html.twig' %}
+
+        {{ form_start(form) }}
+        <div class="bg-slate-900 rounded-xl p-6 border border-slate-700 mb-6">
+            {% include 'admin/gallery/_partials/_form_fields.html.twig' %}
+
+            {# Form action #}
+            <div class="flex items-center justify-between pt-6">
+                <a href="{{ path('app_admin_gallery_index', filterParams) }}" class="text-purple-400 hover:text-purple-300 transition">
+                    &larr; Retour aux photos
+                </a>
+                <button type="submit"
+                        id="submit-btn"
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+
+        {# Pictures Container #}
+        {% include 'admin/gallery/_partials/_pictures_manager.html.twig' %}
+        {{ form_end(form) }}
+
+        {# Danger zone #}
+        <div class="bg-slate-900 rounded-xl p-6 border border-red-900/50">
+            <h2 class="text-lg font-semibold text-red-400 mb-4">Zone de danger</h2>
+            <form action="{{ path('app_admin_gallery_delete', {id: gallery.id}|merge(filterParams)) }}" method="post"
+                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette galerie photo ?')">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ gallery.id) }}">
+                <button type="submit"
+                        class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-4 py-2 rounded-lg transition border border-red-600">
+                    Supprimer la galerie photo
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

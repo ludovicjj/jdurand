@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/photo', name: 'app_front_gallery_')]
-class GalleryController extends AbstractController
+class GalleryPhotoController extends AbstractController
 {
     private const int PICTURES_PER_PAGE = 15;
     private const int GALLERIES_PER_PAGE = 6;
@@ -42,12 +42,61 @@ class GalleryController extends AbstractController
         $galleries = $galleryRepository->findVisibleWithThumbnailsPaginated($activeCategory, 0, self::GALLERIES_PER_PAGE);
         $total = $galleryRepository->countVisible($activeCategory);
 
-        return $this->render('front/gallery/index.html.twig', [
+        return $this->render('front/gallery/photo/index.html.twig', [
             'galleries' => $galleries,
             'categories' => $categories,
             'activeCategory' => $activeCategory,
             'hasMore' => count($galleries) < $total,
             'nextOffset' => count($galleries),
+        ]);
+    }
+
+    #[Route('/{id<\d+>}/{slug}', name: 'show', requirements: ['slug' => '[a-z0-9-]+'], methods: ['GET'])]
+    public function show(
+        Gallery $gallery,
+        string $slug,
+        Request $request,
+        PictureRepository $pictureRepository,
+        GalleryService $galleryService,
+        PageVisibilityChecker $pageVisibilityChecker,
+    ): Response {
+        // Check page is enable
+        $pageVisibilityChecker->denyUnlessEnabled('photo_show');
+
+        if ($gallery->getType() !== Gallery::TYPE_PHOTO) {
+            throw $this->createNotFoundException();
+        }
+
+        // Check can access to private gallery
+        if (!$galleryService->canAccessGallery($gallery, $request->query->get('token'))) {
+            return $this->redirectToRoute('app_front_home');
+        }
+
+        $expectedSlug = $galleryService->resolveSlug($gallery);
+
+        if ($slug !== $expectedSlug) {
+            return $this->redirectToRoute(
+                'app_front_gallery_show',
+                ['id' => $gallery->getId(), 'slug' => $expectedSlug] + $request->query->all(),
+                Response::HTTP_MOVED_PERMANENTLY,
+            );
+        }
+
+        $pictures = $pictureRepository->findByGalleryPaginated($gallery, 0, self::PICTURES_PER_PAGE);
+        $totalPictures = $pictureRepository->countByGallery($gallery);
+        $backParams = $request->query->get('category') ? ['category' => $request->query->get('category')] : [];
+
+        $pictureLightboxPaths = $gallery->isVisibility()
+            ? $pictureRepository->findReadyLightboxPathsByGallery($gallery)
+            : [];
+
+        return $this->render('front/gallery/photo/show.html.twig', [
+            'gallery' => $gallery,
+            'pictures' => $pictures,
+            'hasMore' => $totalPictures > self::PICTURES_PER_PAGE,
+            'token' => $request->query->get('token'),
+            'backParams' => $backParams,
+            'pictureLightboxPaths' => $pictureLightboxPaths,
         ]);
     }
 
@@ -88,51 +137,6 @@ class GalleryController extends AbstractController
             'galleries' => $payload,
             'hasMore' => ($offset + self::GALLERIES_PER_PAGE) < $total,
             'nextOffset' => $offset + self::GALLERIES_PER_PAGE,
-        ]);
-    }
-
-    #[Route('/{id<\d+>}/{slug}', name: 'show', requirements: ['slug' => '[a-z0-9-]+'], methods: ['GET'])]
-    public function show(
-        Gallery $gallery,
-        string $slug,
-        Request $request,
-        PictureRepository $pictureRepository,
-        GalleryService $galleryService,
-        PageVisibilityChecker $pageVisibilityChecker,
-    ): Response {
-        // Check page is enable
-        $pageVisibilityChecker->denyUnlessEnabled('photo_show');
-
-        // Check can access to private gallery
-        if (!$galleryService->canAccessGallery($gallery, $request->query->get('token'))) {
-            return $this->redirectToRoute('app_front_home');
-        }
-
-        $expectedSlug = $galleryService->resolveSlug($gallery);
-
-        if ($slug !== $expectedSlug) {
-            return $this->redirectToRoute(
-                'app_front_gallery_show',
-                ['id' => $gallery->getId(), 'slug' => $expectedSlug] + $request->query->all(),
-                Response::HTTP_MOVED_PERMANENTLY,
-            );
-        }
-
-        $pictures = $pictureRepository->findByGalleryPaginated($gallery, 0, self::PICTURES_PER_PAGE);
-        $totalPictures = $pictureRepository->countByGallery($gallery);
-        $backParams = $request->query->get('category') ? ['category' => $request->query->get('category')] : [];
-
-        $pictureLightboxPaths = $gallery->isVisibility()
-            ? $pictureRepository->findReadyLightboxPathsByGallery($gallery)
-            : [];
-
-        return $this->render('front/gallery/show.html.twig', [
-            'gallery' => $gallery,
-            'pictures' => $pictures,
-            'hasMore' => $totalPictures > self::PICTURES_PER_PAGE,
-            'token' => $request->query->get('token'),
-            'backParams' => $backParams,
-            'pictureLightboxPaths' => $pictureLightboxPaths,
         ]);
     }
 

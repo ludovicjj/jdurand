@@ -1,0 +1,37 @@
+{% extends 'front/base_front.html.twig' %}
+
+{% block title %}{{ page_meta_title('photo_index') }}{% endblock %}
+
+{% block meta_description %}{{ page_meta_description('photo_index') }}{% endblock %}
+
+{% block canonical %}{{ app.request.schemeAndHttpHost ~ path('app_front_gallery_index', activeCategory ? {category: activeCategory.slug} : {}) }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('front_gallery_index') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('front_gallery_index') }}
+{% endblock %}
+
+{% block body %}
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="text-center mb-8">
+            <h1 class="font-['Bodoni_Moda',serif] font-normal uppercase tracking-wider text-5xl md:text-7xl text-gray-900 mb-4">
+                {{ page_title('photo_index') }}
+            </h1>
+            <p class="text-sm md:text-lg text-gray-600 max-w-[200px] md:max-w-2xl mx-auto">
+                {{ page_subtitle('photo_index')|nl2br }}
+            </p>
+        </div>
+
+        {% include 'front/gallery/_partials/_category_carousel.html.twig' with {index_route: 'app_front_gallery_index'} %}
+
+        {% include 'front/gallery/_partials/_galleries_masonry.html.twig' with {
+            list_route: 'app_front_gallery_list',
+            show_route: 'app_front_gallery_show'
+        } %}
+    </div>
+{% endblock %}

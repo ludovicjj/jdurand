@@ -1,0 +1,25 @@
+{# Show page header: back link, title, description, download CTA.
+   Requires: gallery, backParams, index_route #}
+<div class="mb-8">
+    <a href="{{ path(index_route, backParams) }}" class="inline-flex items-center text-gray-600 hover:text-gray-900 transition mb-4">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        {{ 'gallery.back'|trans }}
+    </a>
+    <h1 class="font-['Bodoni_Moda',serif] font-normal text-3xl md:text-4xl font-bold text-gray-900 mb-2">{{ gallery.title }}</h1>
+    {% if gallery.description %}
+        <p class="text-gray-600 text-base md:text-lg">{{ gallery.description }}</p>
+    {% endif %}
+    {% if gallery.downloadable and gallery.downloadUrl %}
+        <a href="{{ gallery.downloadUrl }}"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 mt-4 px-4 py-3 rounded-lg text-sm font-medium border transition bg-white border-gray-200 text-gray-700 hover:border-gray-400 hover:text-gray-900">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            {{ 'gallery.download'|trans }}
+        </a>
+    {% endif %}
+</div>
