@@ -6,10 +6,13 @@ use App\Entity\Page;
 use App\Form\PageType;
 use App\Repository\PageRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Throwable;
 
 #[Route('/admin/page', name: 'app_admin_page_')]
 class PageController extends AbstractController
@@ -73,5 +76,41 @@ class PageController extends AbstractController
         ));
 
         return $this->redirectToRoute('app_admin_page_index');
+    }
+
+    #[Route('/reorder', name: 'reorder', methods: ['POST'])]
+    public function reorder(
+        Request $request,
+        PageRepository $pageRepository,
+        EntityManagerInterface $entityManager,
+    ): JsonResponse {
+        try {
+            $ids = $request->toArray()['ids'] ?? [];
+
+            if (!is_array($ids)) {
+                throw new InvalidArgumentException('Invalid input data, expected array.');
+            }
+
+            $pages = $pageRepository->findBy(['id' => $ids]);
+            $indexed = [];
+            foreach ($pages as $page) {
+                $indexed[$page->getId()] = $page;
+            }
+
+            foreach ($ids as $position => $id) {
+                if (isset($indexed[$id])) {
+                    $indexed[$id]->setPosition($position);
+                }
+            }
+
+            $entityManager->flush();
+
+            return $this->json(['success' => true]);
+        } catch (Throwable $exception) {
+            return $this->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 }

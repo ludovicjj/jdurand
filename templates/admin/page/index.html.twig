@@ -4,6 +4,11 @@
 
 {% block page_title %}Pages{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('admin_page') }}
+{% endblock %}
+
 {% block content %}
     <div class="mb-6">
         <p class="text-slate-400">Gérer les pages du site.</p>
@@ -31,10 +36,24 @@
             <p class="text-slate-400 mb-2">Aucune page pour le moment</p>
         </div>
     {% else %}
-        <div>
+        <div id="pages-sortable" data-reorder-url="{{ path('app_admin_page_reorder') }}">
             {% for page in pages %}
-                <div class="bg-slate-900 border border-slate-700 rounded-lg p-4 mb-1 hover:bg-[#16203a] transition">
+                <div data-id="{{ page.id }}"
+                     class="bg-slate-900 border border-slate-700 rounded-lg p-4 mb-1 hover:bg-[#16203a] transition {{ page.slug == 'home' ? 'no-drag' }}">
                     <div class="flex items-center gap-4">
+                        {% if page.slug != 'home' %}
+                            <span class="drag-handle cursor-grab active:cursor-grabbing text-slate-500 hover:text-slate-300 shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
+                                </svg>
+                            </span>
+                        {% else %}
+                            <span class="text-slate-700 shrink-0" title="La page d'accueil reste en première position">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                </svg>
+                            </span>
+                        {% endif %}
                         <div class="min-w-0 flex-1">
                             <div class="text-white font-medium truncate">{{ page.label }}</div>
                             <div class="text-slate-500 text-xs truncate mt-0.5"><code>{{ page.slug }}</code></div>
