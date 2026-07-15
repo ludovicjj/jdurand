@@ -8,6 +8,7 @@ Description: Description
 # Front - navigation
 nav:
     home: Accueil
+    bio: Bio
     galleries: Photos
     press: Press
     videos: Extraits
@@ -18,6 +19,10 @@ nav:
 # Front - home
 home:
     cta_galleries: Voir les galeries
+
+# Front - bio
+bio:
+    empty: "La biographie sera bientôt disponible"
 
 # Front - gallery
 gallery:

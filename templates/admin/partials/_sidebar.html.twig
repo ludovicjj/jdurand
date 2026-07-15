@@ -73,6 +73,21 @@
                 </a>
             </li>
             <li>
+                <a href="{{ path('app_admin_bio') }}"
+                   title="Bio"
+                   class="flex items-center justify-center md:justify-start px-2 md:px-4 py-3 rounded-lg transition
+                {% if app.current_route starts with 'app_admin_bio' %}
+                    bg-purple-600 text-white
+                {% else %}
+                    text-slate-300 hover:bg-slate-800 hover:text-white
+                {% endif %}">
+                    <svg class="w-5 h-5 md:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    <span class="hidden md:inline">Bio</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ path('app_admin_team_index') }}"
                    title="Team"
                    class="flex items-center justify-center md:justify-start px-2 md:px-4 py-3 rounded-lg transition

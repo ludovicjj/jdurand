@@ -16,6 +16,7 @@ class PageMetaExtension extends AbstractExtension
 
     private const array NAV = [
         'home'        => ['route' => 'app_front_home',          'label' => 'nav.home'],
+        'bio'         => ['route' => 'app_front_bio',           'label' => 'nav.bio'],
         'photo_index' => ['route' => 'app_front_gallery_index', 'label' => 'nav.galleries'],
         'press_index' => ['route' => 'app_front_press_index',   'label' => 'nav.press'],
         'clip_index'  => ['route' => 'app_front_video_index',   'label' => 'nav.videos'],

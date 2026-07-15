@@ -29,6 +29,15 @@ class SitemapController extends AbstractController
             'priority' => '1.0',
         ];
 
+        $bioPage = $pageRepository->findOneBySlug('bio');
+        if ($bioPage && $bioPage->isEffectivelyEnabled()) {
+            $urls[] = [
+                'loc' => $this->generateUrl('app_front_bio', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                'changefreq' => 'monthly',
+                'priority' => '0.8',
+            ];
+        }
+
         $photoPage = $pageRepository->findOneBySlug('photo_index');
         if ($photoPage && $photoPage->isEffectivelyEnabled()) {
             $urls[] = [

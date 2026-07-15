@@ -1,6 +1,7 @@
 # Front - navigation
 nav:
     home: Home
+    bio: Bio
     galleries: Photos
     press: Press
     videos: Clips
@@ -11,6 +12,10 @@ nav:
 # Front - home
 home:
     cta_galleries: View galleries
+
+# Front - bio
+bio:
+    empty: "The biography will be available soon"
 
 # Front - gallery
 gallery:

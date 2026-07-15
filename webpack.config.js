@@ -30,6 +30,7 @@ Encore
     .addEntry('admin_team', './assets/js/admin/team.js')
     .addEntry('admin_team_form', './assets/js/admin/team-form.js')
     .addEntry('admin_options', './assets/js/admin/options.js')
+    .addEntry('admin_bio', './assets/js/admin/bio.js')
     .addEntry('admin_options_form', './assets/js/admin/options-form.js')
     .addEntry('front_app', './assets/js/front/app.js')
     .addEntry('front_gallery_index', './assets/js/front/gallery-index.js')
@@ -54,7 +55,6 @@ Encore
      * https://symfony.com/doc/current/frontend.html#adding-more-features
      */
     .copyFiles([
-        {from: './assets/js/ckeditor', to: 'ckeditor/[path][name].[hash:8].[ext]'},
         {from: './assets/img', to: 'img/[path][name].[hash:8].[ext]'},
     ])
 
