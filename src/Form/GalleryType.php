@@ -42,10 +42,6 @@ class GalleryType extends AbstractType
                     'rows' => 4,
                 ],
             ])
-            ->add('categories', SearchCategoryType::class, [
-                'search' => $this->urlGenerator->generate('api_category_search'),
-                'label' => 'Catégories',
-            ])
             ->add('thumbnailFile', FileType::class, [
                 'label' => 'Image de couverture',
                 'mapped' => false,
@@ -75,6 +71,14 @@ class GalleryType extends AbstractType
                 ],
             ]);
 
+        if ($options['with_categories']) {
+            $builder
+                ->add('categories', SearchCategoryType::class, [
+                    'search' => $this->urlGenerator->generate('api_category_search'),
+                    'label' => 'Catégories',
+                ]);
+        }
+
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
             /** @var Gallery $gallery */
             $gallery = $event->getData();
@@ -91,6 +95,10 @@ class GalleryType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Gallery::class,
+            'with_categories' => true,
         ]);
+
+        // Check type
+        $resolver->setAllowedTypes('with_categories', ['bool']);
     }
 }

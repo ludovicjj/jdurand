@@ -1,0 +1,22 @@
+{% if categories is not empty %}
+    {% set chipBase = 'px-4 py-2 rounded-lg text-sm font-medium border transition' %}
+    {% set chipActive = 'bg-purple-600 border-purple-600 text-white' %}
+    {% set chipIdle = 'bg-slate-900 border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white' %}
+    <div class="mb-6 flex flex-wrap gap-2">
+        <a href="{{ path(index_route) }}"
+           class="{{ chipBase }} {{ activeCategory is null and not uncategorizedOnly ? chipActive : chipIdle }}">
+            Toutes
+        </a>
+        {% for category in categories %}
+            {% set isActive = activeCategory and activeCategory.id == category.id %}
+            <a href="{{ path(index_route, {category: category.slug}) }}"
+               class="{{ chipBase }} {{ isActive ? chipActive : chipIdle }}">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+        <a href="{{ path(index_route, {uncategorized: 1}) }}"
+           class="{{ chipBase }} {{ uncategorizedOnly ? chipActive : chipIdle }}">
+            Sans catégorie
+        </a>
+    </div>
+{% endif %}

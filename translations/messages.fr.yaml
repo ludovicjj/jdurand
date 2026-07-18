@@ -5,18 +5,13 @@ Description: Description
 "Gallerie public": "Gallerie public"
 "Image de couverture": "Image de couverture"
 
-# Front - navigation
-nav:
-    home: Accueil
-    galleries: Photos
-    videos: Extraits
-    team: Team
-    options: Options
-    contact: Contact
-
 # Front - home
 home:
     cta_galleries: Voir les galeries
+
+# Front - bio
+bio:
+    empty: "La biographie sera bientôt disponible"
 
 # Front - gallery
 gallery:
@@ -34,15 +29,10 @@ video:
     back: Retour aux extraits
     empty: "Aucun extrait disponible pour le moment"
 
-# Front - team
-team:
-    back: Retour à Team
+# Front - entry (filmo, ...)
+entry:
+    back: Retour
     empty: "Aucun élément disponible pour le moment"
-
-# Front - options
-options:
-    back: Retour aux options
-    empty: "Aucune option disponible pour le moment"
 
 # Front - contact
 contact:

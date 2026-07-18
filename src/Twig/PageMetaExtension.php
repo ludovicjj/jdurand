@@ -15,10 +15,13 @@ class PageMetaExtension extends AbstractExtension
     private array $cache = [];
 
     private const array NAV = [
-        'home'        => ['route' => 'app_front_home',          'label' => 'nav.home'],
-        'photo_index' => ['route' => 'app_front_gallery_index', 'label' => 'nav.galleries'],
-        'clip_index'  => ['route' => 'app_front_video_index',   'label' => 'nav.videos'],
-        'contact'     => ['route' => 'app_front_contact',       'label' => 'nav.contact'],
+        'home'        => ['route' => 'app_front_home',          'params' => []],
+        'bio'         => ['route' => 'app_front_bio',           'params' => []],
+        'filmo_index' => ['route' => 'app_front_entry_index',   'params' => ['type' => 'filmo']],
+        'photo_index' => ['route' => 'app_front_gallery_index', 'params' => []],
+        'press_index' => ['route' => 'app_front_press_index',   'params' => []],
+        'clip_index'  => ['route' => 'app_front_video_index',   'params' => []],
+        'contact'     => ['route' => 'app_front_contact',       'params' => []],
     ];
 
     public function __construct(
@@ -97,7 +100,9 @@ class PageMetaExtension extends AbstractExtension
                 continue;
             }
 
-            $items[] = $config;
+            $label = $this->isEnglish() ? $page->getLabelEn() : $page->getLabelFr();
+
+            $items[] = $config + ['label' => $label ?? $page->getLabel()];
         }
 
         return $items;

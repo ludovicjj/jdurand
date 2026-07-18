@@ -20,9 +20,15 @@ class GalleryRepository extends ServiceEntityRepository
     /**
      * @return array<array{0: Gallery, picturesCount: int}>
      */
-    public function findAllWithThumbnails(?Category $category = null, bool $uncategorizedOnly = false): array
-    {
+    public function findAllWithThumbnails(
+        ?Category $category = null,
+        bool $uncategorizedOnly = false,
+        string $type = Gallery::TYPE_PHOTO
+    ): array {
         $qb = $this->createQueryBuilder('g')
+            ->andWhere('g.type = :type')
+            ->setParameter('type', $type)
+
             ->leftJoin('g.thumbnail', 't')
             ->leftJoin('g.pictures', 'p')
 
@@ -42,13 +48,24 @@ class GalleryRepository extends ServiceEntityRepository
             $qb->andWhere('SIZE(g.galleryCategories) = 0');
         }
 
+        // Press galleries carry their own global manual order.
+        if ($type === Gallery::TYPE_PRESS) {
+            $qb->orderBy('g.position', 'ASC')
+                ->addOrderBy('g.createdAt', 'DESC');
+        }
+
         return $qb->getQuery()->getResult();
     }
 
-    public function countAll(?Category $category = null, bool $uncategorizedOnly = false): int
-    {
+    public function countAll(
+        ?Category $category = null,
+        bool $uncategorizedOnly = false,
+        string $type = Gallery::TYPE_PHOTO
+    ): int {
         $qb = $this->createQueryBuilder('g')
-            ->select('COUNT(DISTINCT g.id)');
+            ->select('COUNT(DISTINCT g.id)')
+            ->andWhere('g.type = :type')
+            ->setParameter('type', $type);
 
         if ($category !== null) {
             $qb->innerJoin('g.galleryCategories', 'gc')
@@ -64,12 +81,18 @@ class GalleryRepository extends ServiceEntityRepository
     /**
      * @return Gallery[]
      */
-    public function findVisibleWithThumbnailsPaginated(?Category $category, int $offset, int $limit): array
-    {
+    public function findVisibleWithThumbnailsPaginated(
+        ?Category $category,
+        int $offset,
+        int $limit,
+        string $type = Gallery::TYPE_PHOTO
+    ): array {
         $qb = $this->createQueryBuilder('g')
             ->leftJoin('g.thumbnail', 't')
             ->addSelect('t')
             ->where('g.visibility = true')
+            ->andWhere('g.type = :type')
+            ->setParameter('type', $type)
             ->orderBy('g.createdAt', 'DESC')
             ->setFirstResult($offset)
             ->setMaxResults($limit);
@@ -82,14 +105,22 @@ class GalleryRepository extends ServiceEntityRepository
                 ->addOrderBy('g.createdAt', 'DESC');
         }
 
+        // Press galleries carry their own global manual order.
+        if ($type === Gallery::TYPE_PRESS) {
+            $qb->orderBy('g.position', 'ASC')
+                ->addOrderBy('g.createdAt', 'DESC');
+        }
+
         return $qb->getQuery()->getResult();
     }
 
-    public function countVisible(?Category $category): int
+    public function countVisible(?Category $category, string $type = Gallery::TYPE_PHOTO): int
     {
         $qb = $this->createQueryBuilder('g')
             ->select('COUNT(DISTINCT g.id)')
-            ->where('g.visibility = true');
+            ->where('g.visibility = true')
+            ->andWhere('g.type = :type')
+            ->setParameter('type', $type);
 
         if ($category !== null) {
             $qb->innerJoin('g.galleryCategories', 'gc')

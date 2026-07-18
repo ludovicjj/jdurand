@@ -1,0 +1,40 @@
+{% extends 'front/base_front.html.twig' %}
+
+{% block title %}{{ page_meta_title('bio') }}{% endblock %}
+
+{% block meta_description %}{{ page_meta_description('bio') }}{% endblock %}
+
+{% block canonical %}{{ app.request.schemeAndHttpHost ~ path('app_front_bio') }}{% endblock %}
+
+{% block body %}
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="text-center mb-10">
+            <h1 class="font-['Bodoni_Moda',serif] font-normal uppercase tracking-wider text-5xl md:text-7xl text-gray-900 mb-4">
+                {{ page_title('bio') }}
+            </h1>
+            {% if page_subtitle('bio') %}
+                <p class="text-sm md:text-lg text-gray-600 md:max-w-2xl mx-auto">
+                    {{ page_subtitle('bio')|nl2br }}
+                </p>
+            {% endif %}
+        </div>
+
+        {% if bio %}
+            <div class="max-w-3xl mx-auto text-gray-700 leading-relaxed
+                        [&_p]:mb-4 [&_p:last-child]:mb-0
+                        [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4
+                        [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-4
+                        [&_strong]:font-semibold
+                        [&_em]:italic
+                        [&_u]:underline
+                        [&_a]:underline [&_a]:text-blue-600 [&_a:hover]:text-blue-800 [&_a]:transition
+                        [&_blockquote]:border-l-2 [&_blockquote]:border-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:mb-4">
+                {{ bio|raw }}
+            </div>
+        {% else %}
+            <div class="text-center py-20">
+                <p class="text-gray-500">{{ 'bio.empty'|trans }}</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

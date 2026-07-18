@@ -1,0 +1,64 @@
+{% extends 'front/base_front.html.twig' %}
+
+{% block title %}{{ gallery.title }} | {{ site_name() }}{% endblock %}
+
+{% block meta_description %}{{ page_meta_description('press_show') }}{% endblock %}
+
+{% block meta_robots -%}
+    {%- if gallery.visibility -%}
+        index, follow
+    {%- else -%}
+        noindex, nofollow
+    {%- endif -%}
+{%- endblock %}
+
+{% block canonical %}{{ app.request.schemeAndHttpHost ~ path('app_front_press_show', {id: gallery.id, slug: gallery.slug ?: 'gallery'}) }}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+
+{% block og_image -%}
+    {%- if gallery.thumbnail -%}
+        <meta property="og:image" content="{{ s3_url(gallery.thumbnail.filename) }}">
+        <meta name="twitter:image" content="{{ s3_url(gallery.thumbnail.filename) }}">
+    {%- endif -%}
+{%- endblock %}
+
+{% block jsonld -%}
+    {%- if gallery.visibility -%}
+        {%- set imageUrls = [] -%}
+        {%- for lightboxPath in pictureLightboxPaths -%}
+            {%- set imageUrls = imageUrls|merge([s3_url(lightboxPath)]) -%}
+        {%- endfor -%}
+        {%- set gallerySchema = {
+            '@context': 'https://schema.org',
+            '@type': 'ImageGallery',
+            'name': gallery.title,
+            'url': app.request.schemeAndHttpHost ~ path('app_front_press_show', {id: gallery.id, slug: gallery.slug ?: 'gallery'})
+        } -%}
+        {%- if gallery.description -%}
+            {%- set gallerySchema = gallerySchema|merge({'description': gallery.description}) -%}
+        {%- endif -%}
+        {%- if imageUrls is not empty -%}
+            {%- set gallerySchema = gallerySchema|merge({'image': imageUrls}) -%}
+        {%- endif -%}
+        <script type="application/ld+json">{{ gallerySchema|json_encode|raw }}</script>
+    {%- endif -%}
+{%- endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('front_gallery_show') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('front_gallery_show') }}
+{% endblock %}
+
+{% block body %}
+    <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {% include 'front/gallery/_partials/_show_header.html.twig' with {index_route: 'app_front_press_index'} %}
+
+        {% include 'front/gallery/_partials/_pictures_grid.html.twig' %}
+    </div>
+{% endblock %}

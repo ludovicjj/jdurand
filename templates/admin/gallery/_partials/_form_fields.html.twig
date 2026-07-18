@@ -1,0 +1,94 @@
+<div class="flex flex-col xl:flex-row gap-6">
+    {# Title et Description #}
+    <div class="flex-1 space-y-6 order-2 xl:order-1">
+        <div>
+            {{ form_label(form.title, null, {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
+            {{ form_widget(form.title, {'attr': {'class': 'w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition'}}) }}
+            {{ form_errors(form.title) }}
+        </div>
+
+        <div>
+            {{ form_label(form.description, null, {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition resize-none h-[166px]'}}) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        {# Categories #}
+        {% if form.categories is defined %}
+        <div>
+            {{ form_label(form.categories, null, {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
+            {{ form_widget(form.categories, {'attr': {'class': 'js-category-search'}}) }}
+            {{ form_errors(form.categories) }}
+        </div>
+        {% endif %}
+
+        {# Visibility Switch #}
+        <div class="flex items-center gap-4">
+            <span class="text-sm font-medium text-slate-300">{{ form_label(form.visibility, 'Gallerie public', {'label_attr': {'class': 'text-sm font-medium text-slate-300'}}) }}</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+                {{ form_widget(form.visibility, {'attr': {'class': 'sr-only peer'}}) }}
+                <div class="w-11 h-6 bg-slate-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+            </label>
+        </div>
+
+        {# Downloadable Switch #}
+        <div class="flex items-center gap-4">
+            <span class="text-sm font-medium text-slate-300">{{ form_label(form.downloadable, 'Téléchargement', {'label_attr': {'class': 'text-sm font-medium text-slate-300'}}) }}</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+                {{ form_widget(form.downloadable, {'attr': {'class': 'sr-only peer'}}) }}
+                <div class="w-11 h-6 bg-slate-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+            </label>
+        </div>
+
+        {# Download URL (conditional) #}
+        <div id="download-url-wrapper" class="{{ gallery.downloadable ? '' : 'hidden' }}">
+            {{ form_label(form.downloadUrl, null, {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
+            {{ form_widget(form.downloadUrl, {'attr': {'class': 'w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition'}}) }}
+            {{ form_errors(form.downloadUrl, {'attr': {'class': 'text-red-400 text-xs mt-1'}}) }}
+        </div>
+    </div>
+
+    {# Thumbnail #}
+    <div class="w-full xl:w-96 order-1 xl:order-2">
+        {# Thumbnail - label #}
+        {{ form_label(form.thumbnailFile, null, {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
+
+        <div class="relative">
+            {# Thumbnail - Field #}
+            {{ form_widget(form.thumbnailFile, {'attr': {'class': 'hidden', 'accept': 'image/jpeg,image/png'}}) }}
+
+            {# Thumbnail - Dropzone #}
+            <div id="thumbnail-dropzone"
+                 class="flex items-center justify-center border-2 border-dashed border-slate-600 rounded-lg p-6 text-center
+                          hover:border-purple-500 transition cursor-pointer min-h-[267px]"
+            >
+                {% if gallery.thumbnail %}
+                    <div id="thumbnail-preview">
+                        <img id="thumbnail-img" src="{{ s3_url(gallery.thumbnail.filename) }}" alt="Aperçu" class="max-h-48 mx-auto rounded-lg mb-2">
+                        <p class="text-slate-400 text-sm">Cliquez pour changer l'image</p>
+                    </div>
+                    <div id="thumbnail-placeholder" class="hidden">
+                        <svg class="w-12 h-12 mx-auto text-slate-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <p class="text-slate-400">Cliquez pour sélectionner une image</p>
+                        <p class="text-slate-500 text-sm mt-1">JPG ou PNG, max 5 Mo</p>
+                    </div>
+                {% else %}
+                    <div id="thumbnail-preview" class="hidden">
+                        <img id="thumbnail-img" src="" alt="Aperçu" class="max-h-48 mx-auto rounded-lg mb-2">
+                        <p class="text-slate-400 text-sm">Cliquez pour changer l'image</p>
+                    </div>
+                    <div id="thumbnail-placeholder">
+                        <svg class="w-12 h-12 mx-auto text-slate-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <p class="text-slate-400">Cliquez pour sélectionner une image</p>
+                        <p class="text-slate-500 text-sm mt-1">JPG ou PNG, max 5 Mo</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {{ form_errors(form.thumbnailFile) }}
+    </div>
+</div>

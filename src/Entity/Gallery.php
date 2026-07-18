@@ -16,6 +16,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class Gallery
 {
+    public const string TYPE_PHOTO = 'photo';
+    public const string TYPE_PRESS = 'press';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -46,6 +49,12 @@ class Gallery
     #[ORM\Column(options: ['default' => true])]
     private bool $visibility;
 
+    #[ORM\Column(options: ['default' => 'photo'])]
+    private ?string $type;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private int $position = 0;
+
     #[ORM\Column(nullable: true)]
     private ?string $token = null;
 
@@ -68,6 +77,7 @@ class Gallery
         $this->pictures = new ArrayCollection();
         $this->galleryCategories = new ArrayCollection();
         $this->visibility = true;
+        $this->type = self::TYPE_PHOTO;
     }
 
     #[ORM\PrePersist]
@@ -193,6 +203,30 @@ class Gallery
     public function isVisibility(): bool
     {
         return $this->visibility;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): static
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
+
+        return $this;
     }
 
     public function getToken(): ?string

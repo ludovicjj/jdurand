@@ -152,6 +152,9 @@ export class EntryPictureUploader {
         const div = document.createElement('div');
         div.className = 'relative aspect-square bg-slate-800 border border-slate-700 rounded-lg overflow-hidden group';
         div.dataset.pictureId = data.id;
+        if (data.csrfToken) {
+            div.dataset.csrfToken = data.csrfToken;
+        }
 
         div.innerHTML = `
             <img src="${data.thumbnailUrl}" alt="" class="w-full h-full object-cover" />

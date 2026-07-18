@@ -1,7 +1,17 @@
+import { ClassicEditor, Essentials, Paragraph, Autoformat, Bold, Italic, Underline, Link, List, ListProperties, BlockQuote } from 'ckeditor5';
+import coreTranslations from 'ckeditor5/translations/fr.js';
+import 'ckeditor5/ckeditor5.css';
 import '../../styles/components/ckeditor-dark.scss';
 
+const DEFAULT_PLUGINS = [
+    Essentials, Paragraph, Autoformat,
+    Bold, Italic, Underline, Link,
+    List, ListProperties,
+    BlockQuote,
+];
+
 const DEFAULT_TOOLBAR = [
-    'bold', 'italic', 'underline',
+    'bold', 'italic', 'underline', 'link',
     '|',
     'bulletedList', 'numberedList',
     '|',
@@ -17,20 +27,22 @@ export function initCkeditor(selector, config = {}) {
         return;
     }
 
-    if (typeof window.ClassicEditor === 'undefined') {
-        console.error('CKEditor build is not loaded — ensure <script src="build/ckeditor/ckeditor.js"> is included before this script.');
-        return;
-    }
-
     targets.forEach((textarea) => {
         if (textarea.dataset.ckeditorInitialized === 'true') {
             return;
         }
         textarea.dataset.ckeditorInitialized = 'true';
 
-        window.ClassicEditor
+        ClassicEditor
             .create(textarea, {
+                licenseKey: 'GPL',
+                plugins: DEFAULT_PLUGINS,
                 toolbar: DEFAULT_TOOLBAR,
+                translations: [coreTranslations],
+                link: {
+                    defaultProtocol: 'https://',
+                    addTargetToExternalLinks: true,
+                },
                 ...config,
             })
             .catch((error) => {

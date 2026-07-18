@@ -1,15 +1,10 @@
-# Front - navigation
-nav:
-    home: Home
-    galleries: Photos
-    videos: Clips
-    team: Team
-    options: Options
-    contact: Contact
-
 # Front - home
 home:
     cta_galleries: View galleries
+
+# Front - bio
+bio:
+    empty: "The biography will be available soon"
 
 # Front - gallery
 gallery:
@@ -27,15 +22,10 @@ video:
     back: Back to clips
     empty: "No clips available at the moment"
 
-# Front - team
-team:
-    back: Back to Team
+# Front - entry (filmo, ...)
+entry:
+    back: Back
     empty: "No items available at the moment"
-
-# Front - options
-options:
-    back: Back to options
-    empty: "No options available at the moment"
 
 # Front - contact
 contact:
