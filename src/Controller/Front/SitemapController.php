@@ -3,9 +3,12 @@
 namespace App\Controller\Front;
 
 use App\Entity\Gallery;
+use App\Enum\EntryType;
 use App\Repository\CategoryRepository;
+use App\Repository\EntryRepository;
 use App\Repository\GalleryRepository;
 use App\Repository\PageRepository;
+use App\Service\Entry\EntryService;
 use App\Service\Gallery\GalleryService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +23,8 @@ class SitemapController extends AbstractController
         CategoryRepository $categoryRepository,
         GalleryService $galleryService,
         PageRepository $pageRepository,
+        EntryRepository $entryRepository,
+        EntryService $entryService,
     ): Response {
         $urls = [];
 
@@ -82,6 +87,37 @@ class SitemapController extends AbstractController
                 $urls[] = [
                     'loc' => $galleryService->generatePublicUrl($press),
                     'lastmod' => $press->getUpdatedAt()?->format('Y-m-d'),
+                    'changefreq' => 'monthly',
+                    'priority' => '0.7',
+                ];
+            }
+        }
+
+        foreach (EntryType::cases() as $entryType) {
+            $slug = $entryType->pageSlug();
+            if ($slug === null) {
+                continue;
+            }
+
+            $entryPage = $pageRepository->findOneBySlug($slug . '_index');
+            if ($entryPage === null || !$entryPage->isEffectivelyEnabled()) {
+                continue;
+            }
+
+            $urls[] = [
+                'loc' => $this->generateUrl(
+                    'app_front_entry_index',
+                    ['type' => $entryType->value],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
+                'changefreq' => 'weekly',
+                'priority' => '0.8',
+            ];
+
+            foreach ($entryRepository->findPublicActive($entryType) as $entry) {
+                $urls[] = [
+                    'loc' => $entryService->generatePublicUrl($entry),
+                    'lastmod' => $entry->getUpdatedAt()?->format('Y-m-d'),
                     'changefreq' => 'monthly',
                     'priority' => '0.7',
                 ];

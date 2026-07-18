@@ -2,57 +2,66 @@
 
 namespace App\Entity;
 
+use App\Enum\EntryType;
 use App\Enum\VideoProvider;
+use App\Repository\EntryRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 
-#[ORM\MappedSuperclass]
-abstract class AbstractEntry
+#[ORM\Entity(repositoryClass: EntryRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+class Entry
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    protected ?int $id = null;
+    private ?int $id = null;
+
+    #[ORM\Column(length: 32, enumType: EntryType::class)]
+    private ?EntryType $type = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    protected ?string $url = null;
+    private ?string $url = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    protected ?string $thumbnailUrl = null;
+    private ?string $thumbnailUrl = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    protected ?string $title = null;
+    private ?string $posterPath = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $title = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    protected ?string $description = null;
+    private ?string $description = null;
 
     #[ORM\Column(options: ['default' => true])]
-    protected bool $active = true;
+    private bool $active = true;
 
     #[ORM\Column(options: ['default' => true])]
-    protected bool $visibility = true;
+    private bool $visibility = true;
 
     #[ORM\Column(options: ['default' => false])]
-    protected bool $isDraft = false;
+    private bool $isDraft = false;
 
     #[ORM\Column(length: 255, nullable: true)]
-    protected ?string $token = null;
+    private ?string $token = null;
 
     #[ORM\Column(options: ['default' => 0])]
-    protected int $position = 0;
+    private int $position = 0;
 
     #[ORM\Column(length: 100, nullable: true)]
-    protected ?string $externalId = null;
+    private ?string $externalId = null;
 
     #[ORM\Column(length: 32, nullable: true, enumType: VideoProvider::class)]
-    protected ?VideoProvider $provider = null;
+    private ?VideoProvider $provider = null;
 
     #[ORM\Column]
-    protected ?DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    protected ?DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\PrePersist]
     public function onPrePersist(): void
@@ -71,6 +80,18 @@ abstract class AbstractEntry
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getType(): EntryType
+    {
+        return $this->type;
+    }
+
+    public function setType(EntryType $type): static
+    {
+        $this->type = $type;
+
+        return $this;
     }
 
     public function getTitle(): ?string
@@ -169,6 +190,18 @@ abstract class AbstractEntry
         return $this;
     }
 
+    public function getPosterPath(): ?string
+    {
+        return $this->posterPath;
+    }
+
+    public function setPosterPath(?string $posterPath): static
+    {
+        $this->posterPath = $posterPath;
+
+        return $this;
+    }
+
     public function getThumbnailUrl(): ?string
     {
         return $this->thumbnailUrl;
@@ -180,7 +213,6 @@ abstract class AbstractEntry
 
         return $this;
     }
-
 
     public function isVisibility(): bool
     {
@@ -211,7 +243,7 @@ abstract class AbstractEntry
         $this->token = $this->generateToken();
     }
 
-    protected function generateToken(): string
+    private function generateToken(): string
     {
         try {
             return bin2hex(random_bytes(32));

@@ -15,8 +15,8 @@
             <div class="hidden lg:flex lg:col-start-2 space-x-8">
                 {# Pages #}
                 {% for item in nav_items() %}
-                    <a href="{{ path(item.route) }}" class="text-gray-600 hover:text-gray-900 transition">
-                        {{ item.label|trans }}
+                    <a href="{{ path(item.route, item.params) }}" class="text-gray-600 hover:text-gray-900 transition">
+                        {{ item.label }}
                     </a>
                 {% endfor %}
             </div>
@@ -67,8 +67,8 @@
 
             <nav class="flex-1 overflow-y-auto px-4 py-8 space-y-6">
                 {% for item in nav_items() %}
-                    <a href="{{ path(item.route) }}" class="block px-3 py-3 rounded text-center text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition">
-                        {{ item.label|trans }}
+                    <a href="{{ path(item.route, item.params) }}" class="block px-3 py-3 rounded text-center text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition">
+                        {{ item.label }}
                     </a>
                     {% if not loop.last %}
                         <div class="mx-auto w-[5%] h-px bg-gray-300"></div>

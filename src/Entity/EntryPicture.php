@@ -2,32 +2,38 @@
 
 namespace App\Entity;
 
+use App\Repository\EntryPictureRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\MappedSuperclass]
-abstract class AbstractEntryPicture
+#[ORM\Entity(repositoryClass: EntryPictureRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+class EntryPicture
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    protected ?int $id = null;
+    private ?int $id = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?Entry $entry = null;
 
     #[ORM\Column(length: 255)]
-    protected ?string $lightboxPath = null;
+    private ?string $lightboxPath = null;
 
     #[ORM\Column(length: 255)]
-    protected ?string $thumbnailPath = null;
+    private ?string $thumbnailPath = null;
 
     #[ORM\Column(options: ['default' => 0])]
-    protected int $position = 0;
+    private int $position = 0;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
-    protected ?User $createdBy = null;
+    private ?User $createdBy = null;
 
     #[ORM\Column]
-    protected ?DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\PrePersist]
     public function onPrePersist(): void
@@ -38,6 +44,18 @@ abstract class AbstractEntryPicture
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getEntry(): ?Entry
+    {
+        return $this->entry;
+    }
+
+    public function setEntry(?Entry $entry): static
+    {
+        $this->entry = $entry;
+
+        return $this;
     }
 
     public function getLightboxPath(): ?string

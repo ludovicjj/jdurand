@@ -1,56 +1,66 @@
 {% extends 'front/base_front.html.twig' %}
 
-{% block title %}{{ page_meta_title('team_show') }}{% endblock %}
+{% set pageSlug = type.pageSlug ~ '_show' %}
 
-{% block meta_description %}{{ page_meta_description('team_show') }}{% endblock %}
+{% block title %}{{ page_meta_title(pageSlug) }}{% endblock %}
+
+{% block meta_description %}{{ page_meta_description(pageSlug) }}{% endblock %}
 
 {% block meta_robots -%}
-    {%- if team.visibility -%}
+    {%- if entry.visibility -%}
         index, follow
     {%- else -%}
         noindex, nofollow
     {%- endif -%}
 {%- endblock %}
 
-{% block canonical %}{{ app.request.schemeAndHttpHost ~ path('app_front_team_show', {id: team.id}) }}{% endblock %}
+{% block canonical %}{{ app.request.schemeAndHttpHost ~ path('app_front_entry_show', {type: type.value, id: entry.id}) }}{% endblock %}
 
 {% block og_type %}video.other{% endblock %}
 
 {% block og_image -%}
-    {%- if team.thumbnailUrl -%}
-        <meta property="og:image" content="{{ team.thumbnailUrl }}">
-        <meta name="twitter:image" content="{{ team.thumbnailUrl }}">
+    {%- if entry.thumbnailUrl -%}
+        <meta property="og:image" content="{{ entry.thumbnailUrl }}">
+        <meta name="twitter:image" content="{{ entry.thumbnailUrl }}">
     {%- endif -%}
 {%- endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    {{ encore_entry_link_tags('front_team_index') }}
+    {{ encore_entry_link_tags('front_entry_index') }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('front_team_index') }}
+    {{ encore_entry_script_tags('front_entry_index') }}
 {% endblock %}
 
 {% block body %}
     <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="mb-8">
-            <a href="{{ path('app_front_team_index') }}" class="inline-flex items-center text-gray-600 hover:text-gray-900 transition mb-4">
+            <a href="{{ path('app_front_entry_index', {type: type.value}) }}" class="inline-flex items-center text-gray-600 hover:text-gray-900 transition mb-4">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
-                {{ 'team.back'|trans }}
+                {{ 'entry.back'|trans }}
             </a>
-            {% if team.title %}
-                <h1 class="font-['Bodoni_Moda',serif] font-normal text-3xl md:text-4xl font-bold text-gray-900 mb-2">{{ team.title }}</h1>
-            {% endif %}
         </div>
 
-        {% if team.provider %}
+        {% if entry.posterPath %}
+            <img src="{{ s3_url(entry.posterPath) }}"
+                 alt="{{ entry.title ? 'Affiche : ' ~ entry.title : 'Affiche' }}"
+                 loading="lazy"
+                 class="w-full max-w-xs sm:max-w-sm mx-auto rounded-lg shadow-sm mb-6">
+        {% endif %}
+
+        {% if entry.title %}
+            <h1 class="{% if entry.posterPath %}text-center {% endif %}font-['Bodoni_Moda',serif] font-normal text-3xl md:text-4xl font-bold text-gray-900 mb-6">{{ entry.title }}</h1>
+        {% endif %}
+
+        {% if entry.provider %}
             <div class="aspect-video bg-gray-900 overflow-hidden rounded-lg shadow-sm">
-                <iframe src="{{ team.provider.embedUrl(team.externalId) }}"
-                        title="{{ team.title ?: 'Vidéo' }}"
+                <iframe src="{{ entry.provider.embedUrl(entry.externalId) }}"
+                        title="{{ entry.title ?: 'Vidéo' }}"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         referrerpolicy="strict-origin-when-cross-origin"
                         allowfullscreen
@@ -58,7 +68,7 @@
             </div>
         {% endif %}
 
-        {% if team.description %}
+        {% if entry.description %}
             <div class="mt-6 text-sm md:text-base text-gray-600
                         [&_p]:mb-3 [&_p:last-child]:mb-0
                         [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3
@@ -67,7 +77,7 @@
                         [&_em]:italic
                         [&_u]:underline
                         [&_blockquote]:border-l-2 [&_blockquote]:border-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:mb-3">
-                {{ team.description|raw }}
+                {{ entry.description|raw }}
             </div>
         {% endif %}
 

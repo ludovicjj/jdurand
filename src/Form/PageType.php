@@ -13,6 +13,30 @@ class PageType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var Page|null $page */
+        $page = $options['data'] ?? null;
+
+        // Menu labels only make sense for root pages (the only ones shown in the nav).
+        if ($page?->getParent() === null) {
+            $builder
+                ->add('labelFr', TextType::class, [
+                    'label' => 'Libellé du menu (FR)',
+                    'required' => false,
+                    'attr' => [
+                        'placeholder' => 'Texte du lien dans le menu du site',
+                        'maxlength' => 255,
+                    ],
+                ])
+                ->add('labelEn', TextType::class, [
+                    'label' => 'Libellé du menu (EN)',
+                    'required' => false,
+                    'attr' => [
+                        'placeholder' => 'Link text in the site menu',
+                        'maxlength' => 255,
+                    ],
+                ]);
+        }
+
         $builder
             ->add('titleFr', TextType::class, [
                 'label' => 'Titre de la page (FR)',

@@ -30,6 +30,14 @@ class Page
     #[ORM\Column(length: 255)]
     private ?string $label = null;
 
+    #[Assert\Length(max: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $labelFr = null;
+
+    #[Assert\Length(max: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $labelEn = null;
+
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?Page $parent = null;
@@ -128,6 +136,30 @@ class Page
     public function setLabel(string $label): static
     {
         $this->label = $label;
+
+        return $this;
+    }
+
+    public function getLabelFr(): ?string
+    {
+        return $this->labelFr;
+    }
+
+    public function setLabelFr(?string $labelFr): static
+    {
+        $this->labelFr = $labelFr;
+
+        return $this;
+    }
+
+    public function getLabelEn(): ?string
+    {
+        return $this->labelEn;
+    }
+
+    public function setLabelEn(?string $labelEn): static
+    {
+        $this->labelEn = $labelEn;
 
         return $this;
     }

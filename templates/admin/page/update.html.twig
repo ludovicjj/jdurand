@@ -24,7 +24,25 @@
             </div>
 
             <div class="space-y-6">
-                <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Contenu de la page</h3>
+                {% if page.parent is null %}
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Menu du site</h3>
+
+                    <div>
+                        {{ form_label(form.labelFr, null, {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
+                        {{ form_widget(form.labelFr, {'attr': {'class': 'w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition'}}) }}
+                        {{ form_errors(form.labelFr) }}
+                    </div>
+
+                    <div>
+                        {{ form_label(form.labelEn, null, {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
+                        {{ form_widget(form.labelEn, {'attr': {'class': 'w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition'}}) }}
+                        {{ form_errors(form.labelEn) }}
+                    </div>
+
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider pt-4">Contenu de la page</h3>
+                {% else %}
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Contenu de la page</h3>
+                {% endif %}
 
                 <div>
                     {{ form_label(form.titleFr, null, {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}

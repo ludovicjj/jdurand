@@ -1,52 +1,63 @@
 {% extends 'front/base_front.html.twig' %}
 
-{% block title %}{{ page_meta_title('team') }}{% endblock %}
+{% set pageSlug = type.pageSlug ~ '_index' %}
 
-{% block meta_description %}{{ page_meta_description('team') }}{% endblock %}
+{% block title %}{{ page_meta_title(pageSlug) }}{% endblock %}
 
-{% block canonical %}{{ app.request.schemeAndHttpHost ~ path('app_front_team_index') }}{% endblock %}
+{% block meta_description %}{{ page_meta_description(pageSlug) }}{% endblock %}
+
+{% block canonical %}{{ app.request.schemeAndHttpHost ~ path('app_front_entry_index', {type: type.value}) }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    {{ encore_entry_link_tags('front_team_index') }}
+    {{ encore_entry_link_tags('front_entry_index') }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('front_team_index') }}
+    {{ encore_entry_script_tags('front_entry_index') }}
 {% endblock %}
 
 {% block body %}
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div class="text-center mb-10">
             <h1 class="font-['Bodoni_Moda',serif] font-normal uppercase tracking-wider text-5xl md:text-7xl text-gray-900 mb-4">
-                {{ page_title('team') }}
+                {{ page_title(pageSlug) }}
             </h1>
-            <p class="text-sm md:text-lg text-gray-600 md:max-w-2xl mx-auto">
-                {{ page_subtitle('team')|nl2br }}
-            </p>
+            {% if page_subtitle(pageSlug) %}
+                <p class="text-sm md:text-lg text-gray-600 md:max-w-2xl mx-auto">
+                    {{ page_subtitle(pageSlug)|nl2br }}
+                </p>
+            {% endif %}
         </div>
 
-        {% if teams is empty %}
+        {% if entries is empty %}
             <div class="text-center py-20">
                 <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                 </svg>
-                <p class="text-gray-500">{{ 'team.empty'|trans }}</p>
+                <p class="text-gray-500">{{ 'entry.empty'|trans }}</p>
             </div>
         {% else %}
             <div class="flex flex-col gap-12 max-w-4xl mx-auto">
-                {% for team in teams %}
-                    {% set thumbnailUrl = team.thumbnailUrl %}
+                {% for entry in entries %}
+                    {% set thumbnailUrl = entry.thumbnailUrl %}
                     <article class="flex flex-col">
-                        {% if team.title %}
-                            <h2 class="text-lg font-semibold text-gray-900">
-                                {{ team.title }}
+                        {% if entry.posterPath %}
+                            <img src="{{ s3_url(entry.posterPath) }}"
+                                 alt="{{ entry.title ? 'Affiche : ' ~ entry.title : 'Affiche' }}"
+                                 loading="lazy"
+                                 class="w-full max-w-xs mx-auto rounded-lg shadow-sm">
+                        {% endif %}
+
+                        {% if entry.title %}
+                            <h2 class="{% if entry.posterPath %}mt-4 text-center{% endif %} text-lg font-semibold text-gray-900">
+                                {{ entry.title }}
                             </h2>
                         {% endif %}
 
-                        {% if team.description %}
-                            <div class="{% if team.title %}mt-2{% endif %} text-sm text-gray-600
+                        {% if entry.description %}
+                            <div class="{% if entry.title %}mt-2{% elseif entry.posterPath %}mt-4{% endif %} text-sm text-gray-600
                                         [&_p]:mb-3 [&_p:last-child]:mb-0
                                         [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3
                                         [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-3
@@ -54,17 +65,17 @@
                                         [&_em]:italic
                                         [&_u]:underline
                                         [&_blockquote]:border-l-2 [&_blockquote]:border-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:mb-3">
-                                {{ team.description|raw }}
+                                {{ entry.description|raw }}
                             </div>
                         {% endif %}
 
-                        {% if team.provider %}
+                        {% if entry.provider %}
                             <button type="button"
-                                    class="{% if team.title or team.description %}mt-6{% endif %} group relative aspect-video bg-gray-900 overflow-hidden rounded-lg shadow-sm cursor-pointer"
+                                    class="{% if entry.title or entry.description %}mt-6{% endif %} group relative aspect-video bg-gray-900 overflow-hidden rounded-lg shadow-sm cursor-pointer"
                                     data-video-embed
-                                    data-embed-url="{{ team.provider.embedUrl(team.externalId) }}"
-                                    data-video-title="{{ team.title ?: 'Vidéo' }}"
-                                    aria-label="Lire la vidéo{{ team.title ? ' : ' ~ team.title : '' }}">
+                                    data-embed-url="{{ entry.provider.embedUrl(entry.externalId) }}"
+                                    data-video-title="{{ entry.title ?: 'Vidéo' }}"
+                                    aria-label="Lire la vidéo{{ entry.title ? ' : ' ~ entry.title : '' }}">
                                 {% if thumbnailUrl %}
                                     <img src="{{ thumbnailUrl }}"
                                          alt=""
@@ -82,7 +93,7 @@
                             </button>
                         {% endif %}
 
-                        {% set pictures = picturesByTeamId[team.id] ?? [] %}
+                        {% set pictures = picturesByEntryId[entry.id] ?? [] %}
                         {% if pictures is not empty %}
                             <div class="mt-6 swiper w-full min-w-0 overflow-hidden" data-video-pictures-swiper>
                                 <div class="swiper-wrapper">
