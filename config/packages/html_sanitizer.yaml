@@ -19,3 +19,20 @@ framework:
                 # No links, no media — tighten if/when CKE toolbar adds them.
                 allow_relative_links: false
                 allow_relative_medias: false
+
+            app.rich_text_with_links:
+                allow_safe_elements: false
+                allow_static_elements: false
+                allowed_link_schemes: [ 'http', 'https' ]
+                allow_relative_links: false
+                allow_elements:
+                    p: [ ]
+                    strong: [ ]
+                    em: [ ]
+                    u: [ ]
+                    ol: [ ]
+                    ul: [ ]
+                    li: [ ]
+                    blockquote: [ ]
+                    br: [ ]
+                    a: ['href', 'target', 'rel']

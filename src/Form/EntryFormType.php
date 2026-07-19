@@ -26,7 +26,7 @@ class EntryFormType extends AbstractType
     public function __construct(
         private readonly VideoUrlParser $videoUrlParser,
         private readonly VideoThumbnailResolver $videoThumbnailResolver,
-        #[Autowire(service: 'html_sanitizer.sanitizer.app.video_description')]
+        #[Autowire(service: 'html_sanitizer.sanitizer.app.rich_text_with_links')]
         private readonly HtmlSanitizerInterface $descriptionSanitizer,
     ) {
     }
@@ -68,8 +68,8 @@ class EntryFormType extends AbstractType
                     new File(
                         maxSize: '5M',
                         mimeTypes: ['image/jpeg', 'image/png'],
-                        mimeTypesMessage: 'Type de fichier non autorisé. Formats acceptés : JPG, PNG.',
                         maxSizeMessage: 'Fichier trop volumineux. Taille max : {{ limit }} {{ suffix }}.',
+                        mimeTypesMessage: 'Type de fichier non autorisé. Formats acceptés : JPG, PNG.',
                     ),
                 ],
             ])
