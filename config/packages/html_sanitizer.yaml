@@ -1,25 +1,6 @@
 framework:
     html_sanitizer:
         sanitizers:
-            app.video_description:
-                # Strict allowlist — no element allowed by default,
-                # only those listed below pass through.
-                allow_safe_elements: false
-                allow_static_elements: false
-                allow_elements:
-                    p: []
-                    strong: []
-                    em: []
-                    u: []
-                    ol: []
-                    ul: []
-                    li: []
-                    blockquote: []
-                    br: []
-                # No links, no media — tighten if/when CKE toolbar adds them.
-                allow_relative_links: false
-                allow_relative_medias: false
-
             app.rich_text_with_links:
                 allow_safe_elements: false
                 allow_static_elements: false
