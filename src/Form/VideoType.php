@@ -24,7 +24,7 @@ class VideoType extends AbstractType
     public function __construct(
         private readonly VideoUrlParser $videoUrlParser,
         private readonly VideoThumbnailResolver $videoThumbnailResolver,
-        #[Autowire(service: 'html_sanitizer.sanitizer.app.video_description')]
+        #[Autowire(service: 'html_sanitizer.sanitizer.app.rich_text_with_links')]
         private readonly HtmlSanitizerInterface $descriptionSanitizer,
     ) {
     }
